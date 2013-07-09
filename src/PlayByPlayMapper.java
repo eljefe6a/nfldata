@@ -203,9 +203,6 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 			context.getCounter("inc", "notfound").increment(1);
 			logger.warn("Did not match \"" + line + "\"");
 			
-			// TODO: Remove
-			System.exit(-1);
-			
 			return;
 		}
 		
@@ -225,6 +222,7 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 			}
 		}
 		
+		// Check that extracted data isn't from missing groups
 		if (qb == null) {
 			qb = "";
 		}
