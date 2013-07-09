@@ -213,8 +213,17 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWrita
 		StringBuilder output = new StringBuilder();
 		
 		// Add all of the pieces
-		for (String piece : pieces) {
-			output.append(piece).append(OUTPUT_SEPARATOR);
+		for (int i = 0; i < pieces.length; i++) {
+			// Normalize output across all seasons by removing extra info
+			if (piecesIndex == 11) {
+				if (i == 9 || i == 10 || i == 12 || i == 13 || i == 14) {
+					continue;
+				}
+				
+				output.append(pieces[i]).append(OUTPUT_SEPARATOR);
+			} else {
+				output.append(pieces[i]).append(OUTPUT_SEPARATOR);
+			}
 		}
 		
 		// Process the play by play data
