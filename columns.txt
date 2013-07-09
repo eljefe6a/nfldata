@@ -1,0 +1,77 @@
+-- Original Game Data
+Game	Quarter	Minutes	Seconds	Offense	Defense	Down	Yards to Go	Yard Line	Score Difference	Series 1st Down	Play Desc	Score Change	Next Score	Offense Team Wins	Offense Total Score	Defense Total Score	Season
+
+-- Parsed Out Game Data
+QB	Offensive Player	Defensive Player 1	Defensive Player 2	Penalty	Fumble	Incomplete	Is Goal Good	Play Type	Home Team	Away Team	Date	Winner
+
+Game (String) - Game Id
+Quarter (Int) - Game Quarter
+GameMinutes (Int) - Game time countdown left in minutes
+GameSeconds (Int) - Game time countdown left in seconds
+Offense (String) - Team on offense
+Defense (String) - Team on defense
+Down (Int) - Down number
+YardsToGo (Int) - Number of yards for a first down
+YardLine (Int) - Yard line where the ball is
+PlayDesc (String) - The original description of the play
+OffenseScore (Int) - The offense's score as of the current play
+DefenseScore (Int) - The defense's score as of the current play
+QB (String) - The QB/Punter/Kicker in a play
+OffensivePlayer (String) - The receiver or runner
+DefensivePlayer1 (String) - The name of the defensive player on the play
+DefensivePlayer2 (String) - The name of the other defensive player on the play
+Penalty (boolean) - Whether or not there was a penalty on the play
+Fumble (boolean) - Whether or not there was a fumble on the play
+Incomplete (boolean) - Whether or not there was an incomplete pass on the play
+IsGoalGood (boolean) - For a extra point or field goal kick, whether or not there it was good
+PlayType (Possible Values:PASS,INTERCEPTION,PASS,PUNT,RUN,KICKOFF,SPIKE,FIELDGOAL,EXTRAPOINT,PENALTY,FUMBLE,SACK,KNEEL,REVIEWSCRAMBLE,END) - The type of play that was run
+HomeTeam (String) - The name of the home team
+AwayTeam (String) - The name of the away team
+Data (String) - The data of the game
+Winner (String) - The name of the team that eventually wins
+
+-- Stadium Data
+Stadium	Capacity	Standing Room/Expanded seats	Location	Playing surface	Is Artificial Turf	Team(s)	Opened	Weather Station	Roof Type
+
+-- Weather Data
+STATION	DATE	PRCP	SNOW	TMAX	TMIN	TOBS	AWND	WT01	WT02	WT03	WT04	WT05	WT06	WT07	WT08	WT09	WT10	WT11	WT13	WT14	WT15	WT16	WT17	WT18	WT19	WT21	WT22	WV01	WV03	WV07	WV20
+
+STATION - Station name
+DATE - Date of reading
+PRCP - Precipitation (tenths of mm)
+SNOW - Snowfall (mm)
+TMAX - Maximum temperature (tenths of degrees C)
+TMIN - Minimum temperature (tenths of degrees C)
+TOBS - Temperature at the time of observation (tenths of degrees C)
+AWND - Average daily wind speed (tenths of meters per second)
+WT01 - Fog, ice fog, or freezing fog (may include heavy fog)
+WT02 - Heavy fog or heaving freezing fog (not always distinguished from fog)
+WT03 - Thunder
+WT04 - Ice pellets, sleet, snow pellets, or small hail
+WT05 - Hail (may include small hail)
+WT06 - Glaze or rime 
+WT07 - Dust, volcanic ash, blowing dust, blowing sand, or blowing obstruction
+WT08 - Smoke or haze 
+WT09 - Blowing or drifting snow
+WT10 - Tornado, waterspout, or funnel cloud
+WT11 - High or damaging winds
+WT13 - Mist
+WT14 - Drizzle
+WT15 - Freezing drizzle 
+WT16 - Rain (may include freezing rain, drizzle, and freezing drizzle)" 
+WT17 - Freezing rain 
+WT18 - Snow, snow pellets, snow grains, or ice crystals
+
+(-9999) means none 
+
+-- Arrest Data
+Season	Team	Player
+
+Season Player Arrested in (February to February)
+Team person played on
+Player Arrested
+
+-- Parsed Out Arrest Data
+Player in play arrested
+Offense had player arrested in season
+Defense had player arrested in season
