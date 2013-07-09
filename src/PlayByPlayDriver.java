@@ -1,6 +1,5 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -22,8 +21,6 @@ public class PlayByPlayDriver extends Configured implements Tool {
     job.setJarByClass(PlayByPlayDriver.class);
     job.setJobName("Play by Play parser");
 
-    FileSystem fileSystem = FileSystem.get(getConf());
-    
     FileInputFormat.setInputPaths(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
