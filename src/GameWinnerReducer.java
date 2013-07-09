@@ -19,7 +19,7 @@ public class GameWinnerReducer extends Reducer<Text, Text, Text, Text> {
 		ArrayList<Text> allValues = new ArrayList<Text>();
 		
 		// Find the last play of the game to see who wins
-		// Note: this could be done with a secondary sort
+		// Note: this could be done with a secondary sort and not have to cache the values
 		int currentLowMinute = 60;
 		int currentLowSecond = 60;
 		int currentHighestQuarter = 0;
