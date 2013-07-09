@@ -250,15 +250,6 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWrita
 			return;
 		}
 		
-		// Process the game winner
-		if (pieces[piecesIndex+3] == "1") {
-			// Current offense won
-			output.append(pieces[4]).append(OUTPUT_SEPARATOR);
-		} else {
-			// Current defence won
-			output.append(pieces[5]).append(OUTPUT_SEPARATOR);
-		}
-		
 		context.write(new Text(output.toString()), NullWritable.get());
 	}
 }
