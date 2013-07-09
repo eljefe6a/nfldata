@@ -31,7 +31,18 @@ Data (String) - The data of the game
 Winner (String) - The name of the team that eventually wins
 
 -- Stadium Data
-Stadium	Capacity	Standing Room/Expanded seats	Location	Playing surface	Is Artificial Turf	Team(s)	Opened	Weather Station	Roof Type
+Stadium	Capacity	Standing Room/Expanded seats	Location	Playing surface	Is Artificial Turf	Team	Opened	Weather Station	Roof Type
+
+Stadium (String) - The name of the stadium
+Capacity (Int) - The capacity of the stadium
+ExpandedCapacity (Int) - The expanded capacity of the stadium
+Location (String) - The location of the stadium
+PlayingSurface (String) - The type of grass, etc that the stadium has
+IsArtificial (Boolean) - Is the playing surface artificial
+Team (String) - The name of the team that plays at the stadium
+Opened (Int) - The year the stadium opened
+WeatherStation (String) - The name of the weather station closest to the stadium
+RoofType (Possible Values:None,Retractable,Dome) - The type of roof in the stadium
 
 -- Weather Data
 STATION	DATE	PRCP	SNOW	TMAX	TMIN	TOBS	AWND	WT01	WT02	WT03	WT04	WT05	WT06	WT07	WT08	WT09	WT10	WT11	WT13	WT14	WT15	WT16	WT17	WT18	WT19	WT21	WT22	WV01	WV03	WV07	WV20
@@ -67,11 +78,12 @@ WT18 - Snow, snow pellets, snow grains, or ice crystals
 -- Arrest Data
 Season	Team	Player
 
-Season Player Arrested in (February to February)
-Team person played on
-Player Arrested
-
 -- Parsed Out Arrest Data
-Player in play arrested
-Offense had player arrested in season
-Defense had player arrested in season
+PlayerArrested	DefensePlayerArrested	OffensePlayerArrested
+
+Season (Int) - Player Arrested in (February to February)
+Team (String) - Team person played on
+Player (String) - Name of player Arrested
+PlayerArrested (Boolean) - Was a player in the play arrested that season
+DefensePlayerArrested (Boolean) - Offense had player arrested in season
+OffensePlayerArrested (Boolean) - Defense had player arrested in season
