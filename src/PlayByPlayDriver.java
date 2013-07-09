@@ -23,7 +23,6 @@ public class PlayByPlayDriver extends Configured implements Tool {
     job.setJobName("Play by Play parser");
 
     FileSystem fileSystem = FileSystem.get(getConf());
-    fileSystem.delete(new Path(args[1]));
     
     FileInputFormat.setInputPaths(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
