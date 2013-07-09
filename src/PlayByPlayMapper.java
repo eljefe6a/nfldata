@@ -3,12 +3,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Logger;
 
-public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
+public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 	Logger logger = Logger.getLogger(PlayByPlayMapper.class);
 	
 	private static final char OUTPUT_SEPARATOR = '\t';
@@ -226,6 +225,22 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWrita
 			}
 		}
 		
+		if (qb == null) {
+			qb = "";
+		}
+		
+		if (offensivePlayer == null) {
+			offensivePlayer = "";
+		}
+		
+		if (defensivePlayer1 == null) {
+			defensivePlayer1 = "";
+		}
+		
+		if (defensivePlayer2 == null) {
+			defensivePlayer2 = "";
+		}
+		
 		// Process the play by play data
 		output.append(qb).append(OUTPUT_SEPARATOR);
 		output.append(offensivePlayer).append(OUTPUT_SEPARATOR);
@@ -250,6 +265,6 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWrita
 			return;
 		}
 		
-		context.write(new Text(output.toString()), NullWritable.get());
+		context.write(new Text(pieces[0]), new Text(output.toString()));
 	}
 }

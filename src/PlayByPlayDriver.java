@@ -29,8 +29,11 @@ public class PlayByPlayDriver extends Configured implements Tool {
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
     job.setMapperClass(PlayByPlayMapper.class);
-    job.setNumReduceTasks(0);
-
+    job.setReducerClass(GameWinnerReducer.class);
+    
+    job.setMapOutputKeyClass(Text.class);
+    job.setMapOutputValueClass(Text.class);
+    
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(Text.class);
 
