@@ -19,10 +19,10 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWrita
 
 	/** (14:49) E.Manning pass short middle to V.Cruz to NYG 21 for 5 yards (S.Lee) [J.Hatcher]. */
 	Pattern completePass = Pattern
-			.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*pass.*to ([A-Z]*\\.\\s?[A-Za-z]*).*\\(?([A-Z]*\\.\\s?[A-Za-z]*)?\\)?\\s?\\[([A-Z]*\\.\\s?[A-Za-z]*)?\\]");
+			.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*pass.*to ([A-Z]*\\.\\s?[A-Za-z]*).*\\(?([A-Z]*\\.\\s?[A-Za-z]*)?\\)?\\s?\\[?([A-Z]*\\.\\s?[A-Za-z]*)?\\]?");
 
 	/** (13:58) S.Weatherford punts 56 yards to DAL 23 Center-Z.DeOssie. D.Bryant to DAL 24 for 1 yard (Z.DeOssie). */
-	Pattern punt = Pattern.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*punts.*to.*\\.\\s([A-Z]*\\.\\s?[A-Za-z]*)");
+	Pattern punt = Pattern.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*punts.*to.*\\.\\s?([A-Z]*\\.\\s?[A-Za-z]*)?");
 
 	/** (13:44) D.Murray left guard to DAL 27 for 3 yards (C.Blackburn). */
 	Pattern run = Pattern
@@ -30,7 +30,7 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWrita
 
 	/** D.Bailey kicks 69 yards from DAL 35 to NYG -4. D.Wilson to NYG 16 for 20 yards (A.Holmes). */
 	Pattern kickoff = Pattern
-			.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*kicks.*from.*\\.\\s([A-Z]*\\.\\s?[A-Za-z]*)");
+			.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*kicks.*from.*\\.?\\s?([A-Z]*\\.\\s?[A-Za-z]*)?");
 
 	/** (:17) (No Huddle) M.Stafford spiked the ball to stop the clock. */
 	Pattern spike = Pattern.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*spiked the ball");
@@ -46,6 +46,12 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWrita
 	
 	/** 20120909_STL@DET */
 	Pattern gameString = Pattern.compile("(\\d*)_([A-Z]*)@([A-Z]*)");
+	
+	/** (3:42) J.Flacco sacked at BLT 15 for -5 yards (T.Hali). */
+	Pattern sack = Pattern.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*.*sacked.*\\(([A-Z]*\\.\\s?[A-Za-z]*)\\)?\\s?\\[?([A-Z]*\\.\\s?[A-Za-z]*)?\\]?");
+	
+	/** (1:18) J.Flacco kneels to BLT 40 for -1 yards. */
+	Pattern kneel = Pattern.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*kneels");
 
 	/**
 	 * (12:19) (Shotgun) R.Tannehill FUMBLES (Aborted) at MIA 49 recovered by MIA-D.Thomas at HST 49. D.Thomas to HST 49
@@ -54,7 +60,7 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWrita
 	Pattern fumble = Pattern.compile(".*FUMBLES.*");
 
 	Pattern[] allPatterns = { incompletePass, completePass, punt, run, kickoff, spike, fieldGoal, extraPoint, penalty,
-			fumble };
+			fumble, sack, kneel };
 
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -121,6 +127,20 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, NullWrita
 				} else if (pattern == fumble) {
 					hasFumble = true;
 					playType = "FUMBLE";
+				} else if (pattern == sack) {
+					offensivePlayer = matcher.group(1);
+					defensivePlayer1 = matcher.group(2);
+					defensivePlayer2 = matcher.group(3);
+					
+					// Workaround regex bug
+					if (defensivePlayer2 != null && defensivePlayer2.equals(".")) {
+						defensivePlayer2 = "";
+					}
+					
+					playType = "SACK";
+				} else if (pattern == kneel) {
+					qb = matcher.group(1);
+					playType = "KNEEL";
 				}
 
 				break;
