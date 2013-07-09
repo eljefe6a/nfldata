@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
 public class GameWinnerReducer extends Reducer<Text, Text, Text, Text> {
 	Logger logger = Logger.getLogger(GameWinnerReducer.class);
 	
-	/** (14:56) E.Manning pass incomplete deep left to H.Nicks. */
+	/** 20120923_KC@NO 5 -9 32 KC NO 3 6 13 */
 	Pattern lastPlay = Pattern.compile("\\t([4|5])\\t(-?\\d*)\\t(\\d\\d)\\t");
 
 	@Override
