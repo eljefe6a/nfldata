@@ -21,9 +21,6 @@ public class ArrestJoinDriver extends Configured implements Tool {
     Job job = new Job(getConf());
     job.setJarByClass(ArrestJoinDriver.class);
     job.setJobName("Arrest Joiner");
-
-    FileSystem fileSystem = FileSystem.get(getConf());
-    fileSystem.delete(new Path(args[1]));
     
     FileInputFormat.setInputPaths(job, new Path(args[0]));
     FileOutputFormat.setOutputPath(job, new Path(args[1]));
