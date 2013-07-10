@@ -12,6 +12,7 @@ CREATE EXTERNAL TABLE playbyplay_arrests (
 	PlayDesc STRING COMMENT 'The original description of the play',
 	OffenseScore INT COMMENT 'The offenses score as of the current play',
 	DefenseScore INT COMMENT 'The defenses score as of the current play',
+	Year INT COMMENT 'The year of the season',
 	QB STRING COMMENT 'The QB/Punter/Kicker in a play',
 	OffensivePlayer STRING COMMENT 'The receiver or runner',
 	DefensivePlayer1 STRING COMMENT 'The name of the defensive player on the play',
@@ -25,9 +26,6 @@ CREATE EXTERNAL TABLE playbyplay_arrests (
 	AwayTeam STRING COMMENT 'The name of the away team',
 	DatePlayed STRING COMMENT 'The data of the game',
 	Winner STRING COMMENT 'The name of the team that eventually wins',
-	Season INT COMMENT 'Arrested in (February to February)',
-	Team STRING COMMENT 'Team person played on',
-	Player STRING COMMENT 'Name of player Arrested',
 	PlayerArrested BOOLEAN COMMENT 'Was a player in the play arrested that season',
 	DefensePlayerArrested BOOLEAN COMMENT 'Offense had player arrested in season',
 	OffensePlayerArrested BOOLEAN COMMENT 'Defense had player arrested in season'
