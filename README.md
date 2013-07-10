@@ -6,6 +6,7 @@ The are two series of MapReduce programs.  One is a series of programs to extrac
 ETL Series
 ==========
 Run the PlayByPlayDriver on the play by data data.   
+Run the ArrestJoinDriver on the data from PlayByPlayDriver.      
 
 Incomplete Passes
 =================

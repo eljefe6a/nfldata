@@ -256,7 +256,7 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 		if (gameMatcher.find()) {
 			output.append(gameMatcher.group(3)).append(OUTPUT_SEPARATOR);
 			output.append(gameMatcher.group(2)).append(OUTPUT_SEPARATOR);
-			output.append(gameMatcher.group(1)).append(OUTPUT_SEPARATOR);
+			output.append(gameMatcher.group(1));
 		} else {
 			context.getCounter("inc", "gamenotfound").increment(1);
 			logger.warn("Game did not match \"" + line + "\"");
