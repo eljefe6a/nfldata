@@ -56,6 +56,7 @@ LOCATION "/user/training/stadium";
 
 drop table if exists weather;
 CREATE EXTERNAL TABLE weather (
+	STATION STRING COMMENT 'The name of the weather station that took the reading',
 	READINGDATE STRING COMMENT 'Date of reading',
 	PRCP STRING COMMENT 'Precipitation (tenths of mm)',
 	SNOW STRING COMMENT 'Snowfall (mm)',
