@@ -5,8 +5,14 @@ The are two series of MapReduce programs.  One is a series of programs to extrac
 
 ETL Series
 ==========
+
+This program takes the play by play dataset and merges it with other datasets like arrests, stadiums and weather.   
+
 Run the PlayByPlayDriver on the play by data data.   
 Run the ArrestJoinDriver on the data from PlayByPlayDriver.      
+In Hive, run playbyplay_tablecreate.hql.    
+In Hive, run playbyplay_join.hql.   
+Query and have fun!   
 
 Incomplete Passes
 =================
