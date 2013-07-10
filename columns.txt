@@ -27,7 +27,7 @@ IsGoalGood (boolean) - For a extra point or field goal kick, whether or not ther
 PlayType (Possible Values:PASS,INTERCEPTION,PASS,PUNT,RUN,KICKOFF,SPIKE,FIELDGOAL,EXTRAPOINT,PENALTY,FUMBLE,SACK,KNEEL,REVIEWSCRAMBLE,END) - The type of play that was run
 HomeTeam (String) - The name of the home team
 AwayTeam (String) - The name of the away team
-Data (String) - The data of the game
+DatePlayed (String) - The data of the game
 Winner (String) - The name of the team that eventually wins
 
 -- Stadium Data
@@ -48,7 +48,7 @@ RoofType (Possible Values:None,Retractable,Dome) - The type of roof in the stadi
 STATION	DATE	PRCP	SNOW	TMAX	TMIN	TOBS	AWND	WT01	WT02	WT03	WT04	WT05	WT06	WT07	WT08	WT09	WT10	WT11	WT13	WT14	WT15	WT16	WT17	WT18	WT19	WT21	WT22	WV01	WV03	WV07	WV20
 
 STATION - Station name
-DATE - Date of reading
+READINGDATE - Date of reading
 PRCP - Precipitation (tenths of mm)
 SNOW - Snowfall (mm)
 TMAX - Maximum temperature (tenths of degrees C)
@@ -69,7 +69,7 @@ WT11 - High or damaging winds
 WT13 - Mist
 WT14 - Drizzle
 WT15 - Freezing drizzle 
-WT16 - Rain (may include freezing rain, drizzle, and freezing drizzle)" 
+WT16 - Rain (may include freezing rain, drizzle, and freezing drizzle)
 WT17 - Freezing rain 
 WT18 - Snow, snow pellets, snow grains, or ice crystals
 
