@@ -63,7 +63,17 @@ public class ArrestJoinMapper extends Mapper<LongWritable, Text, Text, Text> {
 		StringBuilder output = new StringBuilder();
 		output.append(playerArrested).append(OUTPUT_SEPARATOR);
 		output.append(defensePlayerArrested).append(OUTPUT_SEPARATOR);
-		output.append(offensePlayerArrested);
+		output.append(offensePlayerArrested).append(OUTPUT_SEPARATOR);
+		
+		
+		if (pieces[4].equals(pieces[22])) {
+			// Offense is home team
+			output.append(offensePlayerArrested).append(OUTPUT_SEPARATOR);
+			output.append(defensePlayerArrested);
+		} else {
+			output.append(defensePlayerArrested).append(OUTPUT_SEPARATOR);
+			output.append(offensePlayerArrested);
+		}
 
 		context.write(value, new Text(output.toString()));
 	}

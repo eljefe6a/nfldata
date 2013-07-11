@@ -45,33 +45,57 @@ WeatherStation (String) - The name of the weather station closest to the stadium
 RoofType (Possible Values:None,Retractable,Dome) - The type of roof in the stadium
 
 -- Weather Data
-STATION	DATE	PRCP	SNOW	TMAX	TMIN	TOBS	AWND	WT01	WT02	WT03	WT04	WT05	WT06	WT07	WT08	WT09	WT10	WT11	WT13	WT14	WT15	WT16	WT17	WT18	WT19	WT21	WT22	WV01	WV03	WV07	WV20
+STATION	STATION_NAME	DATE	MDPR	MDSF	DAPR	PRCP	SNWD	SNOW	PSUN	TSUN	TMAX	TMIN	TOBS	WESD	WESF	AWND	WDF2	WDF5	WDFG	WSF2	WSF5	WSFG	PGTM	FMTM	WV07	WV01	WV20	WV03	WT09	WT14	WT07	WT01	WT15	WT17	WT06	WT21	WT05	WT02	WT11	WT22	WT04	WT13	WT16	WT08	WT18	WT03	WT10	WT19
 
-STATION - Station name
-READINGDATE - Date of reading
-PRCP - Precipitation (tenths of mm)
-SNOW - Snowfall (mm)
-TMAX - Maximum temperature (tenths of degrees C)
-TMIN - Minimum temperature (tenths of degrees C)
-TOBS - Temperature at the time of observation (tenths of degrees C)
-AWND - Average daily wind speed (tenths of meters per second)
-WT01 - Fog, ice fog, or freezing fog (may include heavy fog)
-WT02 - Heavy fog or heaving freezing fog (not always distinguished from fog)
-WT03 - Thunder
-WT04 - Ice pellets, sleet, snow pellets, or small hail
-WT05 - Hail (may include small hail)
-WT06 - Glaze or rime 
-WT07 - Dust, volcanic ash, blowing dust, blowing sand, or blowing obstruction
-WT08 - Smoke or haze 
-WT09 - Blowing or drifting snow
-WT10 - Tornado, waterspout, or funnel cloud
-WT11 - High or damaging winds
-WT13 - Mist
-WT14 - Drizzle
-WT15 - Freezing drizzle 
-WT16 - Rain (may include freezing rain, drizzle, and freezing drizzle)
-WT17 - Freezing rain 
-WT18 - Snow, snow pellets, snow grains, or ice crystals
+STATION STRING COMMENT 'Station identifier',
+STATION_NAME STRING COMMENT 'Station location name',
+READINGDATE STRING COMMENT 'Date of reading',
+MDPR INT COMMENT 'Multiday precipitation total (tenths of mm use with DAPR and DWPR, if available)',
+MDSF INT COMMENT 'Multiday snowfall total ',
+DAPR INT COMMENT 'Number of days included in the multiday precipitation total (MDPR)',
+PRCP INT COMMENT 'Precipitation (tenths of mm)',
+SNWD INT COMMENT 'Snow depth (mm)',
+SNOW INT COMMENT 'Snowfall (mm)',
+PSUN INT COMMENT 'Daily percent of possible sunshine (percent)',
+TSUN INT COMMENT 'Daily total sunshine (minutes)',
+TMAX INT COMMENT 'Maximum temperature (tenths of degrees C)',
+TMIN INT COMMENT 'Minimum temperature (tenths of degrees C)',
+TOBS INT COMMENT 'Temperature at the time of observation (tenths of degrees C)',
+WESD INT COMMENT 'Water equivalent of snow on the ground (tenths of mm)',
+WESF INT COMMENT 'Water equivalent of snowfall (tenths of mm)',
+AWND INT COMMENT 'Average daily wind speed (tenths of meters per second)',
+WDF2 INT COMMENT 'Direction of fastest 2-minute wind (degrees)',
+WDF5 INT COMMENT 'Direction of fastest 5-second wind (degrees)',
+WDFG INT COMMENT 'Direction of peak wind gust (degrees)',
+WSF2 INT COMMENT 'Fastest 2-minute wind speed (tenths of meters per second)',
+WSF5 INT COMMENT 'Fastest 5-second wind speed (tenths of meters per second)',
+WSFG INT COMMENT 'Peak guest wind speed (tenths of meters per second)',
+PGTM INT COMMENT 'Peak gust time (hours and minutes, i.e., HHMM)',
+FMTM INT COMMENT 'Time of fastest mile or fastest 1-minute wind (hours and minutes, i.e, HHMM)',
+WV07 INT COMMENT 'Ash, dust, sand, or other blowing obstruction',
+WV01 INT COMMENT 'Fog, ice fog, or freezing fog (may include heavy fog)',
+WV20 INT COMMENT 'Rain or snow shower',
+WV03 INT COMMENT 'Thunder',
+WT09 INT COMMENT 'Blowing or drifting snow',
+WT14 INT COMMENT 'Drizzle',
+WT07 INT COMMENT 'Dust, volcanic ash, blowing dust, blowing sand, or blowing obstruction',
+WT01 INT COMMENT 'Fog, ice fog, or freezing fog (may include heavy fog)',
+WT15 INT COMMENT 'Freezing drizzle ',
+WT17 INT COMMENT 'Freezing rain ',
+WT06 INT COMMENT 'Glaze or rime ',
+WT21 INT COMMENT 'Ground fog ',
+WT05 INT COMMENT 'Hail (may include small hail)',
+WT02 INT COMMENT 'Heavy fog or heaving freezing fog (not always distinguished from fog)',
+WT11 INT COMMENT 'High or damaging winds',
+WT22 INT COMMENT 'Ice fog or freezing fog',
+WT04 INT COMMENT 'Ice pellets, sleet, snow pellets, or small hail',
+WT13 INT COMMENT 'Mist',
+WT16 INT COMMENT 'Rain (may include freezing rain, drizzle, and freezing drizzle)',
+WT08 INT COMMENT 'Smoke or haze ',
+WT18 INT COMMENT 'Snow, snow pellets, snow grains, or ice crystals',
+WT03 INT COMMENT 'Thunder',
+WT10 INT COMMENT 'Tornado, waterspout, or funnel cloud',
+WT19 INT COMMENT 'Unknown source of precipitation '
 
 (-9999) means none 
 
@@ -85,5 +109,11 @@ Season (Int) - Player Arrested in (February to February)
 Team (String) - Team person played on
 Player (String) - Name of player Arrested
 PlayerArrested (Boolean) - Was a player in the play arrested that season
-DefensePlayerArrested (Boolean) - Offense had player arrested in season
+HomePlayerArrested (Boolean) - Offense had player arrested in season
 OffensePlayerArrested (Boolean) - Defense had player arrested in season
+HomeTeamPlayerArrested (Boolean) - Offense had player arrested in season
+AwayTeamPlayerArrested (Boolean) - Defense had player arrested in season
+
+
+Plays lacking weather data - 25,227
+Plays with weather data - 446,339
