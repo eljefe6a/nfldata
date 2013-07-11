@@ -71,8 +71,8 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 	/** 20120909_STL@DET */
 	Pattern gameString = Pattern.compile("(\\d*)_([A-Z]*)@([A-Z]*)");
 
-	Pattern[] allPatterns = { incompletePass, interception, completePass, punt, run, kickoff, spike, fieldGoal, extraPoint, penalty,
-			fumble, sack, kneel, review, scramble, endQuarter };
+	Pattern[] allPatterns = { incompletePass, interception, completePass, punt, kickoff, spike, fieldGoal, extraPoint, penalty,
+			fumble, sack, kneel, review, scramble, endQuarter, run };
 
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -94,26 +94,27 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 
 		int piecesIndex = -1;
 		
+
+		String playDesc = null;
+		
+		// Sometimes the play description is in a different field
+		if (pieces[9].length() > 7) {
+			playDesc = pieces[9];
+			piecesIndex = 9;
+		} else if (pieces[11].length() > 7) {
+			playDesc = pieces[11];
+			piecesIndex = 11;
+		} else {
+			logger.warn("Line is null \"" + line + "\"");
+			return;
+		}
+		
+		if (pieces.length < piecesIndex + 2) {
+			logger.warn("Line is not big enough \"" + line + "\"");
+			return;
+		}
+		
 		for (Pattern pattern : allPatterns) {
-			String playDesc = null;
-			
-			// Sometimes the play description is in a different field
-			if (pieces[9].length() > 7) {
-				playDesc = pieces[9];
-				piecesIndex = 9;
-			} else if (pieces[11].length() > 7) {
-				playDesc = pieces[11];
-				piecesIndex = 11;
-			} else {
-				logger.warn("Line is null \"" + line + "\"");
-				return;
-			}
-			
-			if (pieces.length < piecesIndex + 2) {
-				logger.warn("Line is not big enough \"" + line + "\"");
-				return;
-			}
-			
 			Matcher matcher = pattern.matcher(playDesc);
 
 			if (matcher.find()) {
@@ -138,17 +139,6 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 					qb = matcher.group(1);
 					defensivePlayer1 = matcher.group(2);
 					playType = "PUNT";
-				} else if (pattern == run) {
-					offensivePlayer = matcher.group(1);
-					defensivePlayer1 = matcher.group(2);
-					defensivePlayer2 = matcher.group(3);
-					
-					// Workaround regex bug
-					if (defensivePlayer2 != null && defensivePlayer2.equals(".")) {
-						defensivePlayer2 = "";
-					}
-					
-					playType = "RUN";
 				} else if (pattern == kickoff) {
 					offensivePlayer = matcher.group(1);
 					defensivePlayer1 = matcher.group(2);
@@ -193,6 +183,17 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 					playType = "SCRAMBLE";
 				} else if (pattern == endQuarter) {
 					playType = "END";
+				} else if (pattern == run) {
+					offensivePlayer = matcher.group(1);
+					defensivePlayer1 = matcher.group(2);
+					defensivePlayer2 = matcher.group(3);
+					
+					// Workaround regex bug
+					if (defensivePlayer2 != null && defensivePlayer2.equals(".")) {
+						defensivePlayer2 = "";
+					}
+					
+					playType = "RUN";
 				}
 
 				break;
