@@ -244,21 +244,21 @@ order by playtype;
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
 (select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and TMAX between 121 and 180 group by playtype) playbyplay 
  full outer join 
-(select count(*) as total from playbyplay where rooftype <> "None" and TMAX between 135 and 178) totalstable 
+(select count(*) as total from playbyplay where rooftype <> "None" and TMAX between 121 and 180) totalstable 
 order by playtype;
 
 ! echo "66 to 75 F";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and TMAX between 121 and 180 group by playtype) playbyplay 
+(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and TMAX between 181 and 238 group by playtype) playbyplay 
  full outer join 
-(select count(*) as total from playbyplay where rooftype <> "None" and TMAX between 179 and 238) totalstable 
+(select count(*) as total from playbyplay where rooftype <> "None" and TMAX between 181 and 238) totalstable 
 order by playtype;
 
 ! echo "76 to 85 F";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
 (select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and TMAX between 239 and 294 group by playtype) playbyplay 
  full outer join 
-(select count(*) as total from playbyplay where rooftype <> "None" and TMAX between 239 and 1294) totalstable 
+(select count(*) as total from playbyplay where rooftype <> "None" and TMAX between 239 and 294) totalstable 
 order by playtype;
 
 ! echo "86 to 95 F";
@@ -275,11 +275,53 @@ select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalp
 (select count(*) as total from playbyplay where rooftype <> "None" and TMAX > 351) totalstable 
 order by playtype;
 
--- Play type by down
+! echo "****** Play Type by Down ******";
+! echo "First";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay where down = 1 group by playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where down = 1) totalstable 
+order by playtype;
 
--- Play type by yards to go
+! echo "Second";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay where down = 2 group by playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where down = 2) totalstable 
+order by playtype;
 
--- Wins by teams with arrests comparison
+! echo "Third";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay where down = 3 group by playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where down = 3) totalstable 
+order by playtype;
+
+! echo "Fourth";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay where down = 4 group by playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where down = 4) totalstable 
+order by playtype;
+
+! echo "****** Play Type by Yards to Go ******";
+! echo "All";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay group by yardstogo, playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay group by yardstogo) totalstable 
+order by playtype;
+
+! echo "****** Wins by Arrests ******";
+! echo "All";
+select hometeamwon, awayteamwon, HomeTeamPlayerArrested, AwayTeamPlayerArrested, playbyplay.totalperarrest, totalstable.total, ((playbyplay.totalperarrest / totalstable.total) * 100) as percentage from  
+  (select hometeamwon, awayteamwon, HomeTeamPlayerArrested, AwayTeamPlayerArrested, count(*) as totalperarrest from
+    (select distinct game, (winner = hometeam) as hometeamwon, (winner = awayteam) as awayteamwon, HomeTeamPlayerArrested, AwayTeamPlayerArrested from playbyplay) playbyplay
+  group by hometeamwon, awayteamwon, HomeTeamPlayerArrested, AwayTeamPlayerArrested) playbyplay
+full outer join 
+(select count(1) as total from
+  (select game from playbyplay group by game) playbyplay
+group by game) totalstable;
 
 -- Arrests by season
 
@@ -301,3 +343,6 @@ order by playtype;
 
 -- Scores by artificial turf and grass
 
+-- Play types broken down by team
+
+-- Stadium capacity and wins
