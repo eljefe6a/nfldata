@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 public class GameWinnerReducer extends Reducer<Text, Text, Text, Text> {
 	Logger logger = Logger.getLogger(GameWinnerReducer.class);
 	
+	private static final char OUTPUT_SEPARATOR = '\t';
+	
 	/** 20120923_KC@NO 5 -9 32 KC NO 3 6 13 */
 	Pattern lastPlay = Pattern.compile("\\t([4|5])\\t(-?\\d*)\\t(\\d\\d)\\t");
 
@@ -59,26 +61,45 @@ public class GameWinnerReducer extends Reducer<Text, Text, Text, Text> {
 			
 			return;
 		}
+		
+		StringBuilder output = new StringBuilder();
 
-		Text winner;
 		String[] pieces = currentEnd.split("\\t", -1);
 
 		int offenseScore = Integer.parseInt(pieces[10].trim());
 		int defenseScore = Integer.parseInt(pieces[11].trim());
-
+		// Desc at 9 - Home team at 22 Away team at 23
 		if (offenseScore == defenseScore) {
 			// Last play of the game won
-			winner = new Text(pieces[4]);
+			output.append(pieces[4]).append(OUTPUT_SEPARATOR);
+			
+			// Try to figure out what the last play was
+			if (pieces[9].toUpperCase().indexOf("TOUCHDOWN") != -1) {
+				// It was a touchdown
+				offenseScore += 7;
+			} else {
+				// Otherwise, it was probably a field goal
+				offenseScore += 3;
+			}
 		} else if (offenseScore > defenseScore) {
 			// Offense won the game
-			winner = new Text(pieces[4]);
+			output.append(pieces[4]).append(OUTPUT_SEPARATOR);
 		} else {
 			// Defense won the game
-			winner = new Text(pieces[5]);
+			output.append(pieces[5]).append(OUTPUT_SEPARATOR);
+		}
+		
+		// Was the home team on offense to output the winning score?
+		if (pieces[4].equals(pieces[22])) {
+			output.append(offenseScore).append(OUTPUT_SEPARATOR);
+			output.append(defenseScore).append(OUTPUT_SEPARATOR);
+		} else {
+			output.append(defenseScore).append(OUTPUT_SEPARATOR);
+			output.append(offenseScore).append(OUTPUT_SEPARATOR);
 		}
 		
 		for (Text value : allValues) {
-			context.write(value, winner);
+			context.write(value, new Text(output.toString()));
 		}
 	}
 }

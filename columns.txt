@@ -29,6 +29,8 @@ HomeTeam (String) - The name of the home team
 AwayTeam (String) - The name of the away team
 DatePlayed (String) - The data of the game
 Winner (String) - The name of the team that eventually wins
+HomeTeamScore (int) - The home teams score at the end of the game
+AwayTeamScore (int) - The away teams score at the end of the game
 
 -- Stadium Data
 Stadium	Capacity	Standing Room/Expanded seats	Location	Playing surface	Is Artificial Turf	Team	Opened	Weather Station	Roof Type
@@ -117,3 +119,4 @@ AwayTeamPlayerArrested (Boolean) - Defense had player arrested in season
 
 Plays lacking weather data - 25,227
 Plays with weather data - 446,339
+471392

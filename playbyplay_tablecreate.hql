@@ -26,6 +26,8 @@ CREATE EXTERNAL TABLE playbyplay_arrests (
 	AwayTeam STRING COMMENT 'The name of the away team',
 	DatePlayed STRING COMMENT 'The data of the game',
 	Winner STRING COMMENT 'The name of the team that eventually wins',
+	HomeTeamScore INT COMMENT 'The home teams score at the end of the game',
+	AwayTeamScore INT COMMENT 'The away teams score at the end of the game',
 	PlayerArrested BOOLEAN COMMENT 'Was a player in the play arrested that season',
 	DefensePlayerArrested BOOLEAN COMMENT 'Offense had player arrested in season',
 	OffensePlayerArrested BOOLEAN COMMENT 'Defense had player arrested in season',	

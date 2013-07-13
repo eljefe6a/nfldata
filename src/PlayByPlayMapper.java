@@ -71,8 +71,8 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 	/** 20120909_STL@DET */
 	Pattern gameString = Pattern.compile("(\\d*)_([A-Z]*)@([A-Z]*)");
 
-	Pattern[] allPatterns = { incompletePass, interception, completePass, punt, kickoff, spike, fieldGoal, extraPoint, penalty,
-			fumble, sack, kneel, review, scramble, endQuarter, run };
+	Pattern[] allPatterns = { incompletePass, interception, completePass, punt, kickoff, spike, fieldGoal, extraPoint,
+			sack, kneel, review, scramble, endQuarter, run };
 
 	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
@@ -156,12 +156,6 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 					isGoalGood = playDesc.toLowerCase().indexOf("no good") != -1;
 					isGoalGood = playDesc.toLowerCase().indexOf("missed") != -1;
 					playType = "EXTRAPOINT";
-				} else if (pattern == penalty) {
-					hasPenalty = true;
-					playType = "PENALTY";
-				} else if (pattern == fumble) {
-					hasFumble = true;
-					playType = "FUMBLE";
 				} else if (pattern == sack) {
 					offensivePlayer = matcher.group(1);
 					defensivePlayer1 = matcher.group(2);
@@ -198,6 +192,19 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 
 				break;
 			}
+		}
+		
+		// Always check for penalties and fumbles
+		Matcher matcher = penalty.matcher(playDesc);
+		
+		if (matcher.find()) {
+			hasPenalty = true;
+		}
+		
+		matcher = fumble.matcher(playDesc);
+		
+		if (matcher.find()) {
+			hasFumble = true;
 		}
 
 		if (found == false) {
