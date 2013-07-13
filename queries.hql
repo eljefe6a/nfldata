@@ -361,7 +361,7 @@ where hometeamwon = true)
  full outer join 
 (select count(*) as total from playbyplay where hasWeatherType = true group by game) totalstable);
 
-! echo "hasWeatherType";
+! echo "hasWeather";
 select playbyplay.totalhometeamwins, totalstable.total, ((playbyplay.totalhometeamwins / totalstable.total) * 100) as percentage from  
 (select season, count(*) as totalhometeamwins from
   (select distinct game, (winner = hometeam) as hometeamwon from playbyplay where hasWeather = true) playbyplay
@@ -369,9 +369,46 @@ where hometeamwon = true)
  full outer join 
 (select count(*) as total from playbyplay where hasWeather = true group by game) totalstable);
 
--- Fumbles, penalty and incompletes by weather
+! echo "****** Fumbles, penalty and incompletes by weather ******";
+! echo "Fumbles";
+select totalweatherfumbles, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
+  (select count(*) as totalweatherfumbles from
+    (select game from playbyplay where fumble = true and hasWeather = true) playbyplay)
+   playbyplay
+full outer join 
+  (select count(*) as total from playbyplay where fumble = true) totalstable;
 
--- QB Nemesis - Which defensive person had the most co-occurrence with a QB?
+! echo "Penalty";
+select totalweatherpenalty, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
+  (select count(*) as totalweatherpenalty from
+    (select game from playbyplay where penalty = true and hasWeather = true) playbyplay)
+   playbyplay
+full outer join 
+  (select count(*) as total from playbyplay where penalty = true) totalstable;
+
+! echo "Incomplete";
+select totalweatherincomplete, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
+  (select count(*) as totalweatherincomplete from
+    (select game from playbyplay where incomplete = true and hasWeather = true) playbyplay)
+   playbyplay
+full outer join 
+  (select count(*) as total from playbyplay where incomplete = true) totalstable;
+
+! echo "****** TODO: Nemesis - Offense and Defense co-occurrence ******";
+! echo "QB";
+--select OffensivePlayer, DefensivePlayer, total from  
+--(
+--  select OffensivePlayer, DefensivePlayer, count(*) as total from
+--  (
+--    (select OffensivePlayer, DefensivePlayer1 as DefensivePlayer from playbyplay where OffensivePlayer <> "" and DefensivePlayer1 <> "")
+--  union all
+--    (select OffensivePlayer, DefensivePlayer2 as DefensivePlayer from playbyplay where OffensivePlayer <> "" and DefensivePlayer2 <> "")
+--   ) playbyplay
+--   group by OffensivePlayer, DefensivePlayer
+--) playbyplay
+--order by total DESC limit 100;
+! echo "OffensivePlayer";
+
 
 -- Crowd capacity and scoring
 
