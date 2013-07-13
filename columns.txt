@@ -24,7 +24,7 @@ Penalty (boolean) - Whether or not there was a penalty on the play
 Fumble (boolean) - Whether or not there was a fumble on the play
 Incomplete (boolean) - Whether or not there was an incomplete pass on the play
 IsGoalGood (boolean) - For a extra point or field goal kick, whether or not there it was good
-PlayType (Possible Values:PASS,INTERCEPTION,PASS,PUNT,RUN,KICKOFF,SPIKE,FIELDGOAL,EXTRAPOINT,PENALTY,FUMBLE,SACK,KNEEL,REVIEWSCRAMBLE,END) - The type of play that was run
+PlayType (Possible Values:PASS,INTERCEPTION,PASS,PUNT,RUN,KICKOFF,SPIKE,FIELDGOAL,EXTRAPOINT,SACK,KNEEL,REVIEW,SCRAMBLE,END) - The type of play that was run
 HomeTeam (String) - The name of the home team
 AwayTeam (String) - The name of the away team
 DatePlayed (String) - The data of the game
