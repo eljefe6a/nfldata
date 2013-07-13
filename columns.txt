@@ -101,6 +101,10 @@ WT19 INT COMMENT 'Unknown source of precipitation '
 
 (-9999) means none 
 
+hasWeatherInVicinity - One of the WV's is not "-9999":
+hasWeatherType - One of the WT's is not "-9999":
+hasWeather - One of the WV's or WT's is not "-9999":
+
 -- Arrest Data
 Season	Team	Player
 
@@ -111,8 +115,8 @@ Season (Int) - Player Arrested in (February to February)
 Team (String) - Team person played on
 Player (String) - Name of player Arrested
 PlayerArrested (Boolean) - Was a player in the play arrested that season
-HomePlayerArrested (Boolean) - Offense had player arrested in season
-OffensePlayerArrested (Boolean) - Defense had player arrested in season
+OffensePlayerArrested (Boolean) - Offense had player arrested in season
+DefensePlayerArrested (Boolean) - Defense had player arrested in season
 HomeTeamPlayerArrested (Boolean) - Offense had player arrested in season
 AwayTeamPlayerArrested (Boolean) - Defense had player arrested in season
 
