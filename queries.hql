@@ -3,7 +3,7 @@
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
 (select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and prcp <= 0 group by playtype) playbyplay 
  full outer join 
-(select count(*) as total from playbyplay where rooftype <> "None" and prcp <= 0) totalstable 
+(select count(*) as total from playbyplay where rooftype <> "None") totalstable 
 order by playtype;
 
 ! echo "Play break down with precipitation";
@@ -14,35 +14,40 @@ select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalp
 order by playtype;
 
 ! echo "****** Wind Speeds ******";
-! echo "0 Miles per hour";
+! echo "0-9 Miles per hour";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and awnd < 44 group by playtype) playbyplay 
+(select playtype, count(*) as totalperplay from playbyplay where rooftype = "None" and awnd < 44 group by playtype) playbyplay 
  full outer join 
 (select count(*) as total from playbyplay where rooftype = "None" and awnd < 44) totalstable 
 order by playtype;
 
-! echo "10 Miles per hour";
+! echo "10-19 Miles per hour";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and awnd >= 44 group by playtype) playbyplay 
+(select playtype, count(*) as totalperplay from playbyplay where rooftype = "None" and awnd >= 44 group by playtype) playbyplay 
  full outer join 
 (select count(*) as total from playbyplay where rooftype = "None" and awnd >= 44) totalstable 
 order by playtype;
 
-! echo "20 Miles per hour";
+! echo "20-29 Miles per hour";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and awnd between 45 and 89 group by playtype) playbyplay 
+(select playtype, count(*) as totalperplay from playbyplay where rooftype = "None" and awnd between 45 and 89 group by playtype) playbyplay 
  full outer join 
 (select count(*) as total from playbyplay where rooftype = "None" and awnd between 45 and 89) totalstable 
 order by playtype;
 
-! echo "30 Miles per hour";
+! echo "30-39 Miles per hour";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and awnd between 90 and 134 group by playtype) playbyplay 
+(select playtype, count(*) as totalperplay from playbyplay where rooftype = "None" and awnd between 90 and 134 group by playtype) playbyplay 
  full outer join 
 (select count(*) as total from playbyplay where rooftype = "None" and awnd between 90 and 134) totalstable 
 order by playtype;
 
--- There's nothing above 30 MPH
+! echo "Above 40 Miles per hour";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay where rooftype = "None" and awnd > 135 group by playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where rooftype = "None" and awnd > 135) totalstable 
+order by playtype;
 
 ! echo "With roof";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
@@ -333,38 +338,54 @@ where HomeTeamPlayerArrested = true group by year;
 ! echo "****** Wins by home team ******";
 ! echo "All";
 select playbyplay.totalhometeamwins, totalstable.total, ((playbyplay.totalhometeamwins / totalstable.total) * 100) as percentage from  
-(select season, count(*) as totalhometeamwins from
-  (select distinct game, (winner = hometeam) as hometeamwon from playbyplay) playbyplay
-where hometeamwon = true)
- full outer join 
-(select count(*) as total from playbyplay group by game) totalstable);
+  (select count(*) as totalhometeamwins from
+    (select distinct game, (winner = hometeam) as hometeamwon from playbyplay) playbyplay
+  where hometeamwon = true) playbyplay
+full outer join 
+  (select count(*) as total from
+    (select distinct game from playbyplay) playbyplay
+  ) totalstable;
 
 ! echo "****** Wins by home team when there is bad weather ******";
 ! echo "hasWeatherInVicinity";
 select playbyplay.totalhometeamwins, totalstable.total, ((playbyplay.totalhometeamwins / totalstable.total) * 100) as percentage from  
-(select season, count(*) as totalhometeamwins from
-  (select distinct game, (winner = hometeam) as hometeamwon from playbyplay where hasWeatherInVicinity = true) playbyplay
-where hometeamwon = true)
- full outer join 
-(select count(*) as total from playbyplay where hasWeatherInVicinity = true group by game) totalstable);
+  (select count(*) as totalhometeamwins from
+    (select distinct game, (winner = hometeam) as hometeamwon from playbyplay where hasWeatherInVicinity = true) playbyplay
+  where hometeamwon = true) playbyplay
+full outer join 
+  (select count(*) as total from
+    (select distinct game from playbyplay where hasWeatherInVicinity = true) playbyplay
+  ) totalstable;
 
 ! echo "hasWeatherType";
 select playbyplay.totalhometeamwins, totalstable.total, ((playbyplay.totalhometeamwins / totalstable.total) * 100) as percentage from  
-(select season, count(*) as totalhometeamwins from
-  (select distinct game, (winner = hometeam) as hometeamwon from playbyplay where hasWeatherType = true) playbyplay
-where hometeamwon = true)
- full outer join 
-(select count(*) as total from playbyplay where hasWeatherType = true group by game) totalstable);
+  (select count(*) as totalhometeamwins from
+    (select distinct game, (winner = hometeam) as hometeamwon from playbyplay where hasWeatherType = true) playbyplay
+  where hometeamwon = true) playbyplay
+full outer join 
+  (select count(*) as total from
+    (select distinct game from playbyplay where hasWeatherType = true) playbyplay
+  ) totalstable;
 
 ! echo "hasWeather";
 select playbyplay.totalhometeamwins, totalstable.total, ((playbyplay.totalhometeamwins / totalstable.total) * 100) as percentage from  
-(select season, count(*) as totalhometeamwins from
-  (select distinct game, (winner = hometeam) as hometeamwon from playbyplay where hasWeather = true) playbyplay
-where hometeamwon = true)
- full outer join 
-(select count(*) as total from playbyplay where hasWeather = true group by game) totalstable);
+  (select count(*) as totalhometeamwins from
+    (select distinct game, (winner = hometeam) as hometeamwon from playbyplay where hasWeather = true) playbyplay
+  where hometeamwon = true) playbyplay
+full outer join 
+  (select count(*) as total from
+    (select distinct game from playbyplay where hasWeather = true) playbyplay
+  ) totalstable;
 
 ! echo "****** Fumbles, penalty and incompletes by weather ******";
+! echo "Plays with Weather";
+select totalweatherfumbles, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
+  (select count(*) as totalweatherfumbles from
+    (select game from playbyplay where hasWeather = true) playbyplay)
+   playbyplay
+full outer join 
+  (select count(*) as total from playbyplay) totalstable;
+
 ! echo "Fumbles";
 select totalweatherfumbles, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
   (select count(*) as totalweatherfumbles from
@@ -409,13 +430,123 @@ full outer join
 ! echo "All";
 select capacity, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
   (select game, capacity, homeTeamScore, AwayTeamScore from playbyplay group by game, capacity, homeTeamScore, AwayTeamScore) playbyplay
-group by game, capacity;
+group by capacity
+order by capacity desc;
 
--- Scoring by weather type
+! echo "****** Scoring by weather type ******";
+! echo "hasWeatherInVicinity true";
+select * from
+  (select hometeam, hasWeatherInVicinity, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
+    (select hometeam, homeTeamScore, AwayTeamScore, hasWeatherInVicinity from playbyplay
+    where hasWeatherInVicinity = true
+    group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeatherInVicinity) playbyplay
+  group by hometeam, hasWeatherInVicinity) playbyplay
+order by hometeam, hasWeatherInVicinity;
 
--- Field goals makes by weather type
+! echo "hasWeatherInVicinity false";
+select * from
+  (select hometeam, hasWeatherInVicinity, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
+    (select hometeam, homeTeamScore, AwayTeamScore, hasWeatherInVicinity from playbyplay
+    where hasWeatherInVicinity = false
+    group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeatherInVicinity) playbyplay
+  group by hometeam, hasWeatherInVicinity) playbyplay
+order by hometeam, hasWeatherInVicinity;
+
+! echo "hasWeatherType true";
+select * from
+  (select hometeam, hasWeatherInVicinity, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
+    (select hometeam, homeTeamScore, AwayTeamScore, hasWeatherType from playbyplay
+    where hasWeatherType = true
+    group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeatherType) playbyplay
+  group by hometeam, hasWeatherType) playbyplay
+order by hometeam, hasWeatherType;
+
+! echo "hasWeatherType false";
+select * from
+  (select hometeam, hasWeatherType, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
+    (select hometeam, homeTeamScore, AwayTeamScore, hasWeatherType from playbyplay
+    where hasWeatherType = false
+    group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeatherType) playbyplay
+  group by hometeam, hasWeatherType) playbyplay
+order by hometeam, hasWeatherType;
+
+! echo "hasWeather true";
+select * from
+  (select hometeam, hasWeather, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
+    (select hometeam, homeTeamScore, AwayTeamScore, hasWeather from playbyplay
+    where hasWeather = true
+    group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeather) playbyplay
+  group by hometeam, hasWeather) playbyplay
+order by hometeam, hasWeather;
+
+! echo "hasWeather false";
+select * from
+  (select hometeam, hasWeather, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
+    (select hometeam, homeTeamScore, AwayTeamScore, hasWeather from playbyplay
+    where hasWeather = false
+    group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeather) playbyplay
+  group by hometeam, hasWeather) playbyplay
+order by hometeam, hasWeather;
+
+! echo "****** Field goals makes by weather type ******";
+! echo "hasWeatherInVicinity true";
+select * from
+  (select IsGoalGood, hasWeatherInVicinity from 
+    (select IsGoalGood, hasWeatherInVicinity from playbyplay
+    where hasWeatherInVicinity = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+    group by IsGoalGood, hasWeatherInVicinity) playbyplay
+  group by IsGoalGood, hasWeatherInVicinity) playbyplay
+order by IsGoalGood, hasWeatherInVicinity;
+
+! echo "hasWeatherInVicinity false";
+select * from
+  (select IsGoalGood, hasWeatherInVicinity from 
+    (select IsGoalGood, hasWeatherInVicinity from playbyplay
+    where hasWeatherInVicinity = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+    group by IsGoalGood, hasWeatherInVicinity) playbyplay
+  group by IsGoalGood, hasWeatherInVicinity) playbyplay
+order by IsGoalGood, hasWeatherInVicinity;
+
+! echo "hasWeatherType true";
+select * from
+  (select IsGoalGood, hasWeatherType from 
+    (select IsGoalGood, hasWeatherType from playbyplay
+    where hasWeatherType = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+    group by IsGoalGood, hasWeatherType) playbyplay
+  group by IsGoalGood, hasWeatherType) playbyplay
+order by IsGoalGood, hasWeatherType;
+
+! echo "hasWeatherType false";
+select * from
+  (select IsGoalGood, hasWeatherType from 
+    (select IsGoalGood, hasWeatherType from playbyplay
+    where hasWeatherType = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+    group by IsGoalGood, hasWeatherType) playbyplay
+  group by IsGoalGood, hasWeatherType) playbyplay
+order by IsGoalGood, hasWeatherType;
+
+! echo "hasWeather true";
+select * from
+  (select IsGoalGood, hasWeather from 
+    (select IsGoalGood, hasWeather from playbyplay
+    where hasWeatherType = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+    group by IsGoalGood, hasWeather) playbyplay
+  group by IsGoalGood, hasWeather) playbyplay
+order by IsGoalGood, hasWeather;
+
+! echo "hasWeather false";
+select * from
+  (select IsGoalGood, hasWeather from 
+    (select IsGoalGood, hasWeather from playbyplay
+    where hasWeatherType = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+    group by IsGoalGood, hasWeather) playbyplay
+  group by IsGoalGood, hasWeather) playbyplay
+order by IsGoalGood, hasWeather;
 
 -- The break down of how many plays occur on which yard line
+select yardline, count(*) from playbyplay
+group by yardline
+orderby yardline;
 
 -- Scores by artificial turf and grass
 
