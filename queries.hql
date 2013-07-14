@@ -275,7 +275,7 @@ select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalp
 (select count(*) as total from playbyplay where rooftype = "None" and TMAX between 295 and 350) totalstable 
 order by playtype;
 
-! echo "Above 96 Fr";
+! echo "Above 96 F";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
 (select playtype, count(*) as totalperplay from playbyplay where rooftype = "None" and TMAX > 351 group by playtype) playbyplay 
  full outer join 
@@ -490,63 +490,52 @@ order by hometeam, hasWeather;
 
 ! echo "****** Field goals makes by weather type ******";
 ! echo "hasWeatherInVicinity true";
-select * from
-  (select IsGoalGood, hasWeatherInVicinity from 
-    (select IsGoalGood, hasWeatherInVicinity from playbyplay
-    where hasWeatherInVicinity = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
-    group by IsGoalGood, hasWeatherInVicinity) playbyplay
+select * from 
+  (select IsGoalGood, hasWeatherInVicinity, count(*) from playbyplay
+  where hasWeatherInVicinity = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeatherInVicinity) playbyplay
 order by IsGoalGood, hasWeatherInVicinity;
 
 ! echo "hasWeatherInVicinity false";
-select * from
-  (select IsGoalGood, hasWeatherInVicinity from 
-    (select IsGoalGood, hasWeatherInVicinity from playbyplay
-    where hasWeatherInVicinity = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
-    group by IsGoalGood, hasWeatherInVicinity) playbyplay
+select * from 
+  (select IsGoalGood, hasWeatherInVicinity, count(*) from playbyplay
+  where hasWeatherInVicinity = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeatherInVicinity) playbyplay
 order by IsGoalGood, hasWeatherInVicinity;
 
 ! echo "hasWeatherType true";
-select * from
-  (select IsGoalGood, hasWeatherType from 
-    (select IsGoalGood, hasWeatherType from playbyplay
-    where hasWeatherType = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
-    group by IsGoalGood, hasWeatherType) playbyplay
+select * from 
+  (select IsGoalGood, hasWeatherType, count(*) from playbyplay
+  where hasWeatherType = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeatherType) playbyplay
 order by IsGoalGood, hasWeatherType;
 
 ! echo "hasWeatherType false";
-select * from
-  (select IsGoalGood, hasWeatherType from 
-    (select IsGoalGood, hasWeatherType from playbyplay
-    where hasWeatherType = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
-    group by IsGoalGood, hasWeatherType) playbyplay
+select * from 
+  (select IsGoalGood, hasWeatherType, count(*) from playbyplay
+  where hasWeatherType = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeatherType) playbyplay
 order by IsGoalGood, hasWeatherType;
 
 ! echo "hasWeather true";
-select * from
-  (select IsGoalGood, hasWeather from 
-    (select IsGoalGood, hasWeather from playbyplay
-    where hasWeatherType = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
-    group by IsGoalGood, hasWeather) playbyplay
+select * from 
+  (select IsGoalGood, hasWeather, count(*) from playbyplay
+  where hasWeather = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeather) playbyplay
 order by IsGoalGood, hasWeather;
 
 ! echo "hasWeather false";
-select * from
-  (select IsGoalGood, hasWeather from 
-    (select IsGoalGood, hasWeather from playbyplay
-    where hasWeatherType = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
-    group by IsGoalGood, hasWeather) playbyplay
+select * from 
+  (select IsGoalGood, hasWeather, count(*) from playbyplay
+  where hasWeather = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeather) playbyplay
 order by IsGoalGood, hasWeather;
 
--- The break down of how many plays occur on which yard line
+! echo "****** The break down of how many plays occur on which yard line ******";
+! echo "All";
 select yardline, count(*) from playbyplay
 group by yardline
-orderby yardline;
+order by yardline;
 
 -- Scores by artificial turf and grass
 
