@@ -14,6 +14,13 @@ select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalp
 order by playtype;
 
 ! echo "****** Wind Speeds ******";
+! echo "0 Miles per hour";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and awnd < 44 group by playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where rooftype = "None" and awnd < 44) totalstable 
+order by playtype;
+
 ! echo "10 Miles per hour";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
 (select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and awnd >= 44 group by playtype) playbyplay 
@@ -35,23 +42,11 @@ select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalp
 (select count(*) as total from playbyplay where rooftype = "None" and awnd between 90 and 134) totalstable 
 order by playtype;
 
-! echo "40 Miles per hour";
-select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and awnd between 135 and 178 group by playtype) playbyplay 
- full outer join 
-(select count(*) as total from playbyplay where rooftype = "None" and awnd between 135 and 178) totalstable 
-order by playtype;
-
-! echo "Above 40 Miles per hour";
-select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and awnd > 178 group by playtype) playbyplay 
- full outer join 
-(select count(*) as total from playbyplay where rooftype = "None" and awnd > 178) totalstable 
-order by playtype;
+-- There's nothing above 30 MPH
 
 ! echo "With roof";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and awnd > 178 group by playtype) playbyplay 
+(select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" group by playtype) playbyplay 
  full outer join 
 (select count(*) as total from playbyplay where rooftype <> "None") totalstable 
 order by playtype;
@@ -331,9 +326,9 @@ full outer join
 
 ! echo "****** Arrests by Season ******";
 ! echo "All";
-select season, count(*) as totalperarrest from
-  (select distinct hometeam, season, HomeTeamPlayerArrested from playbyplay) playbyplay
-where HomeTeamPlayerArrested = true group by season;
+select year, count(*) as totalperarrest from
+  (select distinct hometeam, year, HomeTeamPlayerArrested from playbyplay) playbyplay
+where HomeTeamPlayerArrested = true group by year;
 
 ! echo "****** Wins by home team ******";
 ! echo "All";
@@ -407,10 +402,14 @@ full outer join
 --   group by OffensivePlayer, DefensivePlayer
 --) playbyplay
 --order by total DESC limit 100;
+
 ! echo "OffensivePlayer";
 
-
--- Crowd capacity and scoring
+! echo "****** Crowd capacity and scoring ******";
+! echo "All";
+select capacity, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
+  (select game, capacity, homeTeamScore, AwayTeamScore from playbyplay group by game, capacity, homeTeamScore, AwayTeamScore) playbyplay
+group by game, capacity;
 
 -- Scoring by weather type
 

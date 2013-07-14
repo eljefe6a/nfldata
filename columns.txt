@@ -16,6 +16,7 @@ YardLine (Int) - Yard line where the ball is
 PlayDesc (String) - The original description of the play
 OffenseScore (Int) - The offense's score as of the current play
 DefenseScore (Int) - The defense's score as of the current play
+Year (Int) - The year of the season
 QB (String) - The QB/Punter/Kicker in a play
 OffensivePlayer (String) - The receiver or runner
 DefensivePlayer1 (String) - The name of the defensive player on the play
