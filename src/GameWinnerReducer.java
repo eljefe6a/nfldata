@@ -90,13 +90,18 @@ public class GameWinnerReducer extends Reducer<Text, Text, Text, Text> {
 		}
 		
 		// Was the home team on offense to output the winning score?
+		int homeTeamScore, awayTeamScore;
+		
 		if (pieces[4].equals(pieces[22])) {
-			output.append(offenseScore).append(OUTPUT_SEPARATOR);
-			output.append(defenseScore).append(OUTPUT_SEPARATOR);
+			homeTeamScore = offenseScore;
+			awayTeamScore = defenseScore;
 		} else {
-			output.append(defenseScore).append(OUTPUT_SEPARATOR);
-			output.append(offenseScore).append(OUTPUT_SEPARATOR);
+			homeTeamScore = defenseScore;
+			awayTeamScore = offenseScore;
 		}
+
+		output.append(homeTeamScore).append(OUTPUT_SEPARATOR);
+		output.append(awayTeamScore);
 		
 		for (Text value : allValues) {
 			context.write(value, new Text(output.toString()));

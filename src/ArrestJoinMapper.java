@@ -65,14 +65,23 @@ public class ArrestJoinMapper extends Mapper<LongWritable, Text, Text, Text> {
 		output.append(defensePlayerArrested).append(OUTPUT_SEPARATOR);
 		output.append(offensePlayerArrested).append(OUTPUT_SEPARATOR);
 		
+		boolean homeTeamPlayerArrested = false, awayTeamPlayerArrest = false;
 		
 		if (pieces[4].equals(pieces[22])) {
 			// Offense is home team
-			output.append(offensePlayerArrested).append(OUTPUT_SEPARATOR);
-			output.append(defensePlayerArrested);
+			homeTeamPlayerArrested = offensePlayerArrested;
+			awayTeamPlayerArrest = defensePlayerArrested;
 		} else {
-			output.append(defensePlayerArrested).append(OUTPUT_SEPARATOR);
-			output.append(offensePlayerArrested);
+			// Defense is home team
+			homeTeamPlayerArrested = defensePlayerArrested;
+			awayTeamPlayerArrest = offensePlayerArrested;
+		}
+
+		output.append(homeTeamPlayerArrested).append(OUTPUT_SEPARATOR);
+		output.append(awayTeamPlayerArrest);
+
+		if (pieces[0].equals("20121104_CAR@WAS")) {
+			logger.info(pieces[0] + " " + homeTeamPlayerArrested + " " + awayTeamPlayerArrest + " " + playerArrested + " " + value.toString());
 		}
 
 		context.write(value, new Text(output.toString()));

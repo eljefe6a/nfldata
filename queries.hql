@@ -313,6 +313,7 @@ order by playtype;
 
 ! echo "****** Play Type by Yards to Go ******";
 ! echo "All";
+-- TODO: Fix
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
 (select playtype, count(*) as totalperplay from playbyplay group by yardstogo, playtype) playbyplay 
  full outer join 
@@ -331,9 +332,10 @@ full outer join
 
 ! echo "****** Arrests by Season ******";
 ! echo "All";
+-- TODO: Fix
 select year, count(*) as totalperarrest from
-  (select distinct hometeam, year, HomeTeamPlayerArrested from playbyplay) playbyplay
-where HomeTeamPlayerArrested = true group by year;
+  (select hometeam, year from playbyplay where HomeTeamPlayerArrested = true group by year, hometeam) playbyplay
+group by year;
 
 ! echo "****** Wins by home team ******";
 ! echo "All";
@@ -395,7 +397,7 @@ full outer join
   (select count(*) as total from playbyplay where fumble = true) totalstable;
 
 ! echo "Penalty";
-select totalweatherpenalty, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
+select totalweatherpenalty, total, ((playbyplay.totalweatherpenalty / totalstable.total) * 100) as percentage from  
   (select count(*) as totalweatherpenalty from
     (select game from playbyplay where penalty = true and hasWeather = true) playbyplay)
    playbyplay
@@ -403,7 +405,7 @@ full outer join
   (select count(*) as total from playbyplay where penalty = true) totalstable;
 
 ! echo "Incomplete";
-select totalweatherincomplete, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
+select totalweatherincomplete, total, ((playbyplay.totalweatherincomplete / totalstable.total) * 100) as percentage from  
   (select count(*) as totalweatherincomplete from
     (select game from playbyplay where incomplete = true and hasWeather = true) playbyplay)
    playbyplay
