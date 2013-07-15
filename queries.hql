@@ -1,3 +1,4 @@
+set hive.cli.print.header=true;
 ! echo "****** Precipitation ******";
 ! echo "Play break down without precipitation";
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
