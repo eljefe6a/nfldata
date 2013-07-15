@@ -313,12 +313,12 @@ order by playtype;
 
 ! echo "****** Play Type by Yards to Go ******";
 ! echo "All";
--- TODO: Fix
-select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-(select playtype, count(*) as totalperplay from playbyplay group by yardstogo, playtype) playbyplay 
- full outer join 
-(select count(*) as total from playbyplay group by yardstogo) totalstable 
-order by playtype;
+select playbyplay.playtype, playbyplay.yardstogo, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+  (select playtype, yardstogo, count(*) as totalperplay from playbyplay group by yardstogo, playtype) playbyplay 
+join 
+  (select yardstogo, count(*) as total from playbyplay group by yardstogo) totalstable
+  on totalstable.yardstogo = playbyplay.yardstogo
+order by yardstogo, playtype;
 
 ! echo "****** Wins by Arrests ******";
 ! echo "All";
@@ -332,7 +332,6 @@ full outer join
 
 ! echo "****** Arrests by Season ******";
 ! echo "All";
--- TODO: Fix
 select year, count(*) as totalperarrest from
   (select hometeam, year from playbyplay where HomeTeamPlayerArrested = true group by year, hometeam) playbyplay
 group by year;
