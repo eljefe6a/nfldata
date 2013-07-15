@@ -3,7 +3,7 @@
 select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
 (select playtype, count(*) as totalperplay from playbyplay where rooftype <> "None" and prcp <= 0 group by playtype) playbyplay 
  full outer join 
-(select count(*) as total from playbyplay where rooftype <> "None") totalstable 
+(select count(*) as total from playbyplay where rooftype <> "None" and prcp <= 0) totalstable 
 order by playtype;
 
 ! echo "Play break down with precipitation";
@@ -439,7 +439,7 @@ order by capacity desc;
 select * from
   (select hometeam, hasWeatherInVicinity, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
     (select hometeam, homeTeamScore, AwayTeamScore, hasWeatherInVicinity from playbyplay
-    where hasWeatherInVicinity = true
+    where hasWeatherInVicinity = true and rooftype = "None"
     group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeatherInVicinity) playbyplay
   group by hometeam, hasWeatherInVicinity) playbyplay
 order by hometeam, hasWeatherInVicinity;
@@ -448,16 +448,16 @@ order by hometeam, hasWeatherInVicinity;
 select * from
   (select hometeam, hasWeatherInVicinity, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
     (select hometeam, homeTeamScore, AwayTeamScore, hasWeatherInVicinity from playbyplay
-    where hasWeatherInVicinity = false
+    where hasWeatherInVicinity = false OR rooftype <> "None"
     group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeatherInVicinity) playbyplay
   group by hometeam, hasWeatherInVicinity) playbyplay
 order by hometeam, hasWeatherInVicinity;
 
 ! echo "hasWeatherType true";
 select * from
-  (select hometeam, hasWeatherInVicinity, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
+  (select hometeam, hasWeatherType, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
     (select hometeam, homeTeamScore, AwayTeamScore, hasWeatherType from playbyplay
-    where hasWeatherType = true
+    where hasWeatherType = true and rooftype = "None"
     group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeatherType) playbyplay
   group by hometeam, hasWeatherType) playbyplay
 order by hometeam, hasWeatherType;
@@ -466,7 +466,7 @@ order by hometeam, hasWeatherType;
 select * from
   (select hometeam, hasWeatherType, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
     (select hometeam, homeTeamScore, AwayTeamScore, hasWeatherType from playbyplay
-    where hasWeatherType = false
+    where hasWeatherType = false OR rooftype <> "None"
     group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeatherType) playbyplay
   group by hometeam, hasWeatherType) playbyplay
 order by hometeam, hasWeatherType;
@@ -475,7 +475,7 @@ order by hometeam, hasWeatherType;
 select * from
   (select hometeam, hasWeather, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
     (select hometeam, homeTeamScore, AwayTeamScore, hasWeather from playbyplay
-    where hasWeather = true
+    where hasWeather = true and rooftype = "None"
     group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeather) playbyplay
   group by hometeam, hasWeather) playbyplay
 order by hometeam, hasWeather;
@@ -484,7 +484,7 @@ order by hometeam, hasWeather;
 select * from
   (select hometeam, hasWeather, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
     (select hometeam, homeTeamScore, AwayTeamScore, hasWeather from playbyplay
-    where hasWeather = false
+    where hasWeather = false OR rooftype <> "None"
     group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeather) playbyplay
   group by hometeam, hasWeather) playbyplay
 order by hometeam, hasWeather;
@@ -493,42 +493,42 @@ order by hometeam, hasWeather;
 ! echo "hasWeatherInVicinity true";
 select * from 
   (select IsGoalGood, hasWeatherInVicinity, count(*) from playbyplay
-  where hasWeatherInVicinity = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where hasWeatherInVicinity = true AND rooftype = "None" AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeatherInVicinity) playbyplay
 order by IsGoalGood, hasWeatherInVicinity;
 
 ! echo "hasWeatherInVicinity false";
 select * from 
   (select IsGoalGood, hasWeatherInVicinity, count(*) from playbyplay
-  where hasWeatherInVicinity = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where (hasWeatherInVicinity = false OR rooftype <> "None") AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeatherInVicinity) playbyplay
 order by IsGoalGood, hasWeatherInVicinity;
 
 ! echo "hasWeatherType true";
 select * from 
   (select IsGoalGood, hasWeatherType, count(*) from playbyplay
-  where hasWeatherType = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where hasWeatherType = true AND rooftype = "None" AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeatherType) playbyplay
 order by IsGoalGood, hasWeatherType;
 
 ! echo "hasWeatherType false";
 select * from 
   (select IsGoalGood, hasWeatherType, count(*) from playbyplay
-  where hasWeatherType = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where (hasWeatherType = false OR rooftype <> "None") AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeatherType) playbyplay
 order by IsGoalGood, hasWeatherType;
 
 ! echo "hasWeather true";
 select * from 
   (select IsGoalGood, hasWeather, count(*) from playbyplay
-  where hasWeather = true AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where hasWeather = true AND rooftype = "None" AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeather) playbyplay
 order by IsGoalGood, hasWeather;
 
 ! echo "hasWeather false";
 select * from 
   (select IsGoalGood, hasWeather, count(*) from playbyplay
-  where hasWeather = false AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where (hasWeather = false OR rooftype <> "None") AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
   group by IsGoalGood, hasWeather) playbyplay
 order by IsGoalGood, hasWeather;
 
