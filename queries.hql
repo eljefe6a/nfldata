@@ -544,3 +544,5 @@ order by yardline;
 -- Play types broken down by team
 
 -- Stadium capacity and wins
+
+-- Fumbles by down
