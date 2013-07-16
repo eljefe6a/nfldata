@@ -396,7 +396,7 @@ select totalweatherfumbles, total, ((playbyplay.totalweatherfumbles / totalstabl
 full outer join 
   (select count(*) as total from playbyplay) totalstable;
 
-! echo "Fumbles";
+! echo "Fumbles by game";
 select hasWeather, totalweatherfumbles, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
   (select hasWeather, count(*) as totalweatherfumbles from 
     (select game, hasWeather from playbyplay where fumble = true group by game, hasWeather) playbyplay
@@ -406,21 +406,25 @@ full outer join
     (select game from playbyplay where fumble = true group by game) playbyplay
   ) totalstable;
 
-! echo "Penalty";
-select totalweatherpenalty, total, ((playbyplay.totalweatherpenalty / totalstable.total) * 100) as percentage from  
-  (select count(*) as totalweatherpenalty from
-    (select game from playbyplay where penalty = true and hasWeather = true) playbyplay)
+! echo "Penalty by plays";
+select playbyplay.hasWeather, totalweatherpenalty, total, ((playbyplay.totalweatherpenalty / totalstable.total) * 100) as percentage from  
+  (select hasWeather, count(*) as totalweatherpenalty from
+    (select hasWeather from playbyplay where penalty = true) playbyplay
+   group by hasWeather)
    playbyplay
-full outer join 
-  (select count(*) as total from playbyplay where penalty = true) totalstable;
+join 
+  (select hasWeather, count(*) as total from playbyplay group by hasWeather) totalstable
+on playbyplay.hasWeather = totalstable.hasWeather;
 
-! echo "Incomplete";
-select totalweatherincomplete, total, ((playbyplay.totalweatherincomplete / totalstable.total) * 100) as percentage from  
-  (select count(*) as totalweatherincomplete from
-    (select game from playbyplay where incomplete = true and hasWeather = true) playbyplay)
+! echo "Incomplete by plays";
+select playbyplay.hasWeather, totalweatherpenalty, total, ((playbyplay.totalweatherpenalty / totalstable.total) * 100) as percentage from  
+  (select hasWeather, count(*) as totalweatherpenalty from
+    (select hasWeather from playbyplay where incomplete = true) playbyplay
+   group by hasWeather)
    playbyplay
-full outer join 
-  (select count(*) as total from playbyplay where incomplete = true) totalstable;
+join 
+  (select hasWeather, count(*) as total from playbyplay group by hasWeather) totalstable
+on playbyplay.hasWeather = totalstable.hasWeather;  
 
 ! echo "****** TODO: Nemesis - Offense and Defense co-occurrence ******";
 ! echo "QB";
@@ -599,3 +603,25 @@ select IsGoalGood, playbyplay.totalperplay, totalstable.total, ((playbyplay.tota
  full outer join 
 (select count(*) as total from playbyplay where playtype = "FIELDGOAL" AND rooftype <> "None") totalstable 
 order by IsGoalGood;
+
+! echo "Play types by elevation";
+! echo "Sea Level";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay where elevation < 100 group by playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where elevation < 100) totalstable 
+order by playtype;
+
+! echo "Mid Range";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay where elevation between 100 and 5000 group by playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where elevation between 100 and 5000) totalstable 
+order by playtype;
+
+! echo "Mountain";
+select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select playtype, count(*) as totalperplay from playbyplay where elevation > 5000 group by playtype) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where elevation > 5000) totalstable 
+order by playtype;
