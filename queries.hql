@@ -314,12 +314,20 @@ order by playtype;
 
 ! echo "****** Play Type by Yards to Go ******";
 ! echo "All";
+ select playbyplay.playtype, playbyplay.yardstogo, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+   (select playtype, yardstogo, count(*) as totalperplay from playbyplay group by yardstogo, playtype) playbyplay  
+ join 
+   (select yardstogo, count(*) as total from playbyplay group by yardstogo) totalstable
+   on totalstable.yardstogo = playbyplay.yardstogo
+ order by yardstogo, playtype;
+
+! echo "Sack and Scrambles";
 select playbyplay.playtype, playbyplay.yardstogo, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-  (select playtype, yardstogo, count(*) as totalperplay from playbyplay group by yardstogo, playtype) playbyplay 
+  (select playtype, yardstogo, count(*) as totalperplay from playbyplay where (playtype = "SACK" OR playtype = "SCRAMBLE") group by yardstogo, playtype) playbyplay 
 join 
   (select yardstogo, count(*) as total from playbyplay group by yardstogo) totalstable
   on totalstable.yardstogo = playbyplay.yardstogo
-order by yardstogo, playtype;
+order by percentage;
 
 ! echo "****** Wins by Arrests ******";
 ! echo "All";
@@ -389,12 +397,14 @@ full outer join
   (select count(*) as total from playbyplay) totalstable;
 
 ! echo "Fumbles";
-select totalweatherfumbles, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
-  (select count(*) as totalweatherfumbles from
-    (select game from playbyplay where fumble = true and hasWeather = true) playbyplay)
-   playbyplay
+select hasWeather, totalweatherfumbles, total, ((playbyplay.totalweatherfumbles / totalstable.total) * 100) as percentage from  
+  (select hasWeather, count(*) as totalweatherfumbles from 
+    (select game, hasWeather from playbyplay where fumble = true group by game, hasWeather) playbyplay
+  group by hasWeather) playbyplay
 full outer join 
-  (select count(*) as total from playbyplay where fumble = true) totalstable;
+  (select count(*) as total from
+    (select game from playbyplay where fumble = true group by game) playbyplay
+  ) totalstable;
 
 ! echo "Penalty";
 select totalweatherpenalty, total, ((playbyplay.totalweatherpenalty / totalstable.total) * 100) as percentage from  
@@ -494,42 +504,42 @@ order by hometeam, hasWeather;
 ! echo "hasWeatherInVicinity true";
 select * from 
   (select IsGoalGood, hasWeatherInVicinity, count(*) from playbyplay
-  where hasWeatherInVicinity = true AND rooftype = "None" AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where hasWeatherInVicinity = true AND rooftype = "None" AND (playtype = "FIELDGOAL") 
   group by IsGoalGood, hasWeatherInVicinity) playbyplay
 order by IsGoalGood, hasWeatherInVicinity;
 
 ! echo "hasWeatherInVicinity false";
 select * from 
   (select IsGoalGood, hasWeatherInVicinity, count(*) from playbyplay
-  where (hasWeatherInVicinity = false OR rooftype <> "None") AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where (hasWeatherInVicinity = false OR rooftype <> "None") AND (playtype = "FIELDGOAL") 
   group by IsGoalGood, hasWeatherInVicinity) playbyplay
 order by IsGoalGood, hasWeatherInVicinity;
 
 ! echo "hasWeatherType true";
 select * from 
   (select IsGoalGood, hasWeatherType, count(*) from playbyplay
-  where hasWeatherType = true AND rooftype = "None" AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where hasWeatherType = true AND rooftype = "None" AND (playtype = "FIELDGOAL") 
   group by IsGoalGood, hasWeatherType) playbyplay
 order by IsGoalGood, hasWeatherType;
 
 ! echo "hasWeatherType false";
 select * from 
   (select IsGoalGood, hasWeatherType, count(*) from playbyplay
-  where (hasWeatherType = false OR rooftype <> "None") AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where (hasWeatherType = false OR rooftype <> "None") AND (playtype = "FIELDGOAL") 
   group by IsGoalGood, hasWeatherType) playbyplay
 order by IsGoalGood, hasWeatherType;
 
 ! echo "hasWeather true";
 select * from 
   (select IsGoalGood, hasWeather, count(*) from playbyplay
-  where hasWeather = true AND rooftype = "None" AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where hasWeather = true AND rooftype = "None" AND (playtype = "FIELDGOAL") 
   group by IsGoalGood, hasWeather) playbyplay
 order by IsGoalGood, hasWeather;
 
 ! echo "hasWeather false";
 select * from 
   (select IsGoalGood, hasWeather, count(*) from playbyplay
-  where (hasWeather = false OR rooftype <> "None") AND (playtype = "FIELDGOAL" OR playtype = "EXTRAPOINT") 
+  where (hasWeather = false OR rooftype <> "None") AND (playtype = "FIELDGOAL") 
   group by IsGoalGood, hasWeather) playbyplay
 order by IsGoalGood, hasWeather;
 
@@ -546,3 +556,46 @@ order by yardline;
 -- Stadium capacity and wins
 
 -- Fumbles by down
+
+! echo "****** Missed field goals by wind ******";
+! echo "0-9 Miles per hour";
+select IsGoalGood, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select IsGoalGood, count(*) as totalperplay from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd < 44 group by IsGoalGood) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd < 44) totalstable 
+order by IsGoalGood;
+
+! echo "10-19 Miles per hour";
+select IsGoalGood, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select IsGoalGood, count(*) as totalperplay from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd >= 44 group by IsGoalGood) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd >= 44) totalstable 
+order by IsGoalGood;
+
+! echo "20-29 Miles per hour";
+select IsGoalGood, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select IsGoalGood, count(*) as totalperplay from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd between 45 and 89 group by IsGoalGood) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd between 45 and 89) totalstable 
+order by IsGoalGood;
+
+! echo "30-39 Miles per hour";
+select IsGoalGood, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select IsGoalGood, count(*) as totalperplay from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd between 90 and 134 group by IsGoalGood) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd between 90 and 134) totalstable 
+order by IsGoalGood;
+
+! echo "Above 40 Miles per hour";
+select IsGoalGood, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select IsGoalGood, count(*) as totalperplay from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd > 135 group by IsGoalGood) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where playtype = "FIELDGOAL" AND rooftype = "None" and awnd > 135) totalstable 
+order by IsGoalGood;
+
+! echo "With roof";
+select IsGoalGood, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select IsGoalGood, count(*) as totalperplay from playbyplay where playtype = "FIELDGOAL" AND rooftype <> "None" group by IsGoalGood) playbyplay 
+ full outer join 
+(select count(*) as total from playbyplay where playtype = "FIELDGOAL" AND rooftype <> "None") totalstable 
+order by IsGoalGood;
