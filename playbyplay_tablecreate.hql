@@ -50,7 +50,8 @@ CREATE EXTERNAL TABLE stadium (
 	Team STRING COMMENT 'The name of the team that plays at the stadium',
 	Opened INT COMMENT 'The year the stadium opened',
 	WeatherStation STRING COMMENT 'The name of the weather station closest to the stadium',
-	RoofType STRING COMMENT '(Possible Values:None,Retractable,Dome) - The type of roof in the stadium'
+	RoofType STRING COMMENT '(Possible Values:None,Retractable,Dome) - The type of roof in the stadium',
+	Elevation INT COMMENT 'The altitude of the stadium'
 	)
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
