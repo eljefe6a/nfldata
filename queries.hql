@@ -345,6 +345,12 @@ select year, count(*) as totalperarrest from
   (select hometeam, year from playbyplay where HomeTeamPlayerArrested = true group by year, hometeam) playbyplay
 group by year;
 
+! echo "By team per season";
+select hometeam, count(*) as totalperarrest from
+  (select hometeam, year from playbyplay where HomeTeamPlayerArrested = true group by year, hometeam) playbyplay
+group by hometeam
+order by totalperarrest;
+
 ! echo "****** Wins by home team ******";
 ! echo "All";
 select playbyplay.totalhometeamwins, totalstable.total, ((playbyplay.totalhometeamwins / totalstable.total) * 100) as percentage from  
