@@ -173,13 +173,11 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 					playType = "SPIKE";
 				} else if (pattern == fieldGoal) {
 					qb = matcher.group(1);
-					isGoalGood = playDesc.toLowerCase().indexOf("no good") != -1;
-					isGoalGood = playDesc.toLowerCase().indexOf("missed") != -1;
+					isGoalGood = playDesc.toLowerCase().indexOf("no good") == -1 &&  playDesc.toLowerCase().indexOf("missed") == -1;
 					playType = "FIELDGOAL";
 				} else if (pattern == extraPoint) {
 					qb = matcher.group(1);
-					isGoalGood = playDesc.toLowerCase().indexOf("no good") != -1;
-					isGoalGood = playDesc.toLowerCase().indexOf("missed") != -1;
+					isGoalGood = playDesc.toLowerCase().indexOf("no good") == -1 &&  playDesc.toLowerCase().indexOf("missed") == -1;
 					playType = "EXTRAPOINT";
 				} else if (pattern == sack) {
 					offensivePlayer = matcher.group(1);
