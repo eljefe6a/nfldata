@@ -3,6 +3,8 @@ nfldata
 
 The are two series of MapReduce programs.  One is a series of programs to extract and normalize the data.  The second is a simple program to look at incomplete passes.  
 
+The play by play dataaset can be found at http://www.advancednflstats.com/2010/04/play-by-play-data.html.   
+
 ETL Series
 ==========
 

@@ -46,6 +46,7 @@ Team (String) - The name of the team that plays at the stadium
 Opened (Int) - The year the stadium opened
 WeatherStation (String) - The name of the weather station closest to the stadium
 RoofType (Possible Values:None,Retractable,Dome) - The type of roof in the stadium
+Elevation - The elevation of the stadium
 
 -- Weather Data
 STATION	STATION_NAME	DATE	MDPR	MDSF	DAPR	PRCP	SNWD	SNOW	PSUN	TSUN	TMAX	TMIN	TOBS	WESD	WESF	AWND	WDF2	WDF5	WDFG	WSF2	WSF5	WSFG	PGTM	FMTM	WV07	WV01	WV20	WV03	WT09	WT14	WT07	WT01	WT15	WT17	WT06	WT21	WT05	WT02	WT11	WT22	WT04	WT13	WT16	WT08	WT18	WT03	WT10	WT19
