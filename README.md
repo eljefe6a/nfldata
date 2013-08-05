@@ -15,6 +15,7 @@ Run the ArrestJoinDriver on the data from PlayByPlayDriver.
 In Hive, run playbyplay_tablecreate.hql.    
 In Hive, run playbyplay_join.hql.   
 Query and have fun!   
+See the queries in queries.hql for some examples of how and what to query.   
 
 Incomplete Passes
 =================
