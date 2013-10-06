@@ -16,6 +16,8 @@ Put the stadiums.csv in HDFS in a directory called stadium.
 Put the 173328.csv in HDFS in a directory called weather.      
 In Hive, run playbyplay_tablecreate.hql.    
 In Hive, run playbyplay_join.hql.   
+In Hive, run drivestransform.hql.   
+In Hive, run drivesresulttransform.hql.   
 Query and have fun!   
 See the queries in queries.hql for some examples of how and what to query.   
 

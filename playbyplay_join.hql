@@ -1,6 +1,6 @@
-drop table if exists playbyplay;
+drop table if exists playbyplay_weather;
 
-create table playbyplay
+create table playbyplay_weather
 STORED AS TEXTFILE AS
 select *,
 (WV07 > 0 OR WV01 > 0 OR WV20 > 0 OR WV03 > 0) as hasWeatherInVicinity,
