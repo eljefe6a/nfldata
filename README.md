@@ -12,6 +12,8 @@ This program takes the play by play dataset and merges it with other datasets li
 
 Run the PlayByPlayDriver on the play by data data.   
 Run the ArrestJoinDriver on the data from PlayByPlayDriver.      
+Put the stadiums.csv in HDFS in a directory called stadium.      
+Put the 173328.csv in HDFS in a directory called weather.      
 In Hive, run playbyplay_tablecreate.hql.    
 In Hive, run playbyplay_join.hql.   
 Query and have fun!   
