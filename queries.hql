@@ -631,3 +631,58 @@ select playtype, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalp
  full outer join 
 (select count(*) as total from playbyplay where elevation > 5000) totalstable 
 order by playtype;
+
+! echo "Play results by yard started on";
+! echo "By Play";
+select playbyplay.yardline, playbyplay.driveresult, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select driveresult, yardline, count(*) as totalperplay from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY driveresult, yardline) playbyplay 
+join 
+  (select count(*) as total, yardline from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY yardline) totalstable 
+  ON (totalstable.yardline = playbyplay.yardline)
+order by yardline, driveresult;
+
+! echo "By Scoring";
+select playbyplay.yardline, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+  (select yardline, count(*) as totalperplay 
+  from playbyplay where play = 1 and driveresult <> "KICKOFF" AND (driveresult = "EXTRAPOINT" OR driveresult = "FIELDGOAL")
+  GROUP BY yardline) playbyplay 
+join 
+  (select count(*) as total, yardline from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY yardline) totalstable 
+  ON (totalstable.yardline = playbyplay.yardline)
+order by yardline;
+
+! echo "Starting at 98 yardline and up";
+select playbyplay.driveresult, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select driveresult, count(*) as totalperplay from playbyplay where play = 1 and driveresult <> "KICKOFF" and yardline >= 98 GROUP BY driveresult) playbyplay 
+full outer join
+  (select count(*) as total from playbyplay where play = 1 and yardline >= 98 and driveresult <> "KICKOFF") totalstable 
+order by driveresult;
+
+! echo "Starting at 44 to 98 yardline";
+select playbyplay.driveresult, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select driveresult, count(*) as totalperplay from playbyplay where play = 1 and driveresult <> "KICKOFF" and yardline < 98 and yardline > 44 GROUP BY driveresult) playbyplay 
+full outer join
+  (select count(*) as total from playbyplay where play = 1 and yardline < 98 and yardline > 44 and driveresult <> "KICKOFF") totalstable 
+order by driveresult;
+
+! echo "Starting at 0 to 44 yardline";
+select playbyplay.driveresult, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select driveresult, count(*) as totalperplay from playbyplay where play = 1 and driveresult <> "KICKOFF" and yardline < 44 GROUP BY driveresult) playbyplay 
+full outer join
+  (select count(*) as total from playbyplay where play = 1 and yardline < 44 and driveresult <> "KICKOFF") totalstable 
+order by driveresult;
+
+! echo "All Yardlines";
+select playbyplay.driveresult, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
+(select driveresult, count(*) as totalperplay from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY driveresult) playbyplay 
+full outer join
+  (select count(*) as total from playbyplay where play = 1 and driveresult <> "KICKOFF") totalstable 
+order by driveresult;
+
+! echo "Drives";
+! echo "Number of drives";
+select count(*) from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY yardline;
+
+! echo "Number of drives";
+
+! echo "Yard line where drives start";
