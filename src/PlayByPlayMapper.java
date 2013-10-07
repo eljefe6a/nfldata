@@ -2,9 +2,11 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.log4j.Logger;
 
 public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
@@ -99,6 +101,9 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 			kickoff, spike, fieldGoal, extraPoint, sack, kneel, review,
 			scramble, endQuarter, run };
 
+	String idPrefix = null;
+	int id = 0;
+
 	@Override
 	public void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
@@ -173,11 +178,13 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 					playType = "SPIKE";
 				} else if (pattern == fieldGoal) {
 					qb = matcher.group(1);
-					isGoalGood = playDesc.toLowerCase().indexOf("no good") == -1 &&  playDesc.toLowerCase().indexOf("missed") == -1;
+					isGoalGood = playDesc.toLowerCase().indexOf("no good") == -1
+							&& playDesc.toLowerCase().indexOf("missed") == -1;
 					playType = "FIELDGOAL";
 				} else if (pattern == extraPoint) {
 					qb = matcher.group(1);
-					isGoalGood = playDesc.toLowerCase().indexOf("no good") == -1 &&  playDesc.toLowerCase().indexOf("missed") == -1;
+					isGoalGood = playDesc.toLowerCase().indexOf("no good") == -1
+							&& playDesc.toLowerCase().indexOf("missed") == -1;
 					playType = "EXTRAPOINT";
 				} else if (pattern == sack) {
 					offensivePlayer = matcher.group(1);
@@ -243,7 +250,7 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 
 		// Process the game output
 		Matcher gameMatcher = gameString.matcher(pieces[0]);
-		
+
 		// Process the game output
 		if (gameMatcher.find()) {
 			// Check that offense and defense is filled in
@@ -265,7 +272,7 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 			logger.warn("Game did not match \"" + line + "\"");
 			return;
 		}
-		
+
 		// Add all of the pieces
 		for (int i = 0; i < pieces.length; i++) {
 			// Normalize output across all seasons by removing extra info
@@ -311,8 +318,23 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 		// Process the game output
 		output.append(gameMatcher.group(3)).append(OUTPUT_SEPARATOR);
 		output.append(gameMatcher.group(2)).append(OUTPUT_SEPARATOR);
-		output.append(gameMatcher.group(1));
-
+		output.append(gameMatcher.group(1)).append(OUTPUT_SEPARATOR);
+		
+		// Output the unique id of the play
+		output.append(idPrefix).append("_").append(StringUtils.leftPad(String.valueOf(id), 8, "0"));
+		id++;
+		
 		context.write(new Text(pieces[0]), new Text(output.toString()));
+	}
+
+	@Override
+	public void setup(Context context) {
+		id = 0;
+
+		FileSplit fileSplit = (FileSplit) context.getInputSplit();
+		idPrefix = fileSplit.getPath().getName();
+		
+		// Crop until the first underscore
+		idPrefix = idPrefix.substring(0, idPrefix.indexOf("_"));
 	}
 }

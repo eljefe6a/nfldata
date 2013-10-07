@@ -12,7 +12,7 @@ currentplay = 0
 # Iterate through every line passed in to stdin
 for input in sys.stdin.readlines():
 	# Plays come in chronological order
-	game, quarter, offense, gameminutes, gameseconds, playdesc = input.strip().split("\t")
+	game, quarter, offense, gameminutes, gameseconds, playid = input.strip().split("\t")
 	
 	if currentgame is None:
 		currentgame = game
@@ -46,4 +46,4 @@ for input in sys.stdin.readlines():
 	currentquarter = quarter
 	
 	# Printing more fields than normal to work around Hive's transform limitation
-	print str(currentdrive) + "\t" + str(currentplay) + "\t" + game + "\t" + quarter + "\t" + gameminutes + "\t" + gameseconds + "\t" + playdesc
+	print str(currentdrive) + "\t" + str(currentplay) + "\t" + playid

@@ -644,10 +644,10 @@ order by yardline, driveresult;
 ! echo "By Scoring";
 select playbyplay.yardline, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
   (select yardline, count(*) as totalperplay 
-  from playbyplay where play = 1 and driveresult <> "KICKOFF" AND (driveresult = "EXTRAPOINT" OR driveresult = "FIELDGOAL")
+  from playbyplay where play = 1 and (driveresult = "EXTRAPOINT" OR driveresult = "FIELDGOAL") AND driveresult <> "KICKOFF"
   GROUP BY yardline) playbyplay 
 join 
-  (select count(*) as total, yardline from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY yardline) totalstable 
+  (select count(*) as total, yardline from playbyplay where play = 1 AND driveresult <> "KICKOFF" GROUP BY yardline) totalstable 
   ON (totalstable.yardline = playbyplay.yardline)
 order by yardline;
 
@@ -683,6 +683,6 @@ order by driveresult;
 ! echo "Number of drives";
 select count(*) from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY yardline;
 
-! echo "Number of drives";
+! echo "Breakdown of results for all drives";
 
 ! echo "Yard line where drives start";

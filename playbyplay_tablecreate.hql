@@ -25,6 +25,7 @@ CREATE EXTERNAL TABLE playbyplay_arrests (
 	HomeTeam STRING COMMENT 'The name of the home team',
 	AwayTeam STRING COMMENT 'The name of the away team',
 	DatePlayed STRING COMMENT 'The data of the game',
+	PlayId STRING COMMENT 'The unique id of the play',
 	Winner STRING COMMENT 'The name of the team that eventually wins',
 	HomeTeamScore INT COMMENT 'The home teams score at the end of the game',
 	AwayTeamScore INT COMMENT 'The away teams score at the end of the game',
