@@ -126,7 +126,7 @@ firstplaycounts = FOREACH firstplaygroup GENERATE COUNT(firstplay) as totalplays
 yardscrossed = CROSS firstplaycounts, yardcounts;
 
 yardscalculated = FOREACH yardscrossed GENERATE yardcounts::group, yardcounts::totalperyard, firstplaycounts::totalplays, 
-	(yardcounts::totalperyard / firstplaycounts::totalplays) * 100;
+	((float)yardcounts::totalperyard / (float)firstplaycounts::totalplays) * 100;
 
 yardscalculatedsorted = ORDER yardscalculated by group;
 
