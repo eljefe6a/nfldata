@@ -696,3 +696,25 @@ select playbyplay.yardline, playbyplay.totalperplay, totalstable.total, ((playby
 full outer join
   (select count(*) as total from playbyplay where play = 1 and driveresult <> "KICKOFF") totalstable 
 order by yardline;
+
+! echo "Drives and Plays";
+! echo "Average number of plays in a drive and the maximum number of plays in a drive";
+select avg(maxplays), max(maxplays) from playbyplay where play = 1 and driveresult <> "KICKOFF";
+
+! echo "Average number of plays in a drive and the maximum number of plays in a drive broken down by stadium";
+select stadium, avg(maxplays), max(maxplays) from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY stadium order by stadium;
+
+! echo "Average number of plays in a drive and the maximum number of plays in a drive broken down by team";
+select offense, avg(maxplays), max(maxplays) from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY offense order by offense;
+
+! echo "Average number of plays in a drive and the maximum number of plays in a drive with weather";
+select avg(maxplays), max(maxplays) from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY hasweather;
+
+! echo "Average number of plays in a drive and the maximum number of plays in a drive broken down by stadium with weather";
+select stadium, hasweather, avg(maxplays), max(maxplays) from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY hasweather, stadium order by stadium, hasweather;
+
+! echo "Average number of plays in a drive and the maximum number of plays in a drive broken down by team with weather";
+select offense, hasweather, avg(maxplays), max(maxplays) from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY hasweather, offense order by offense, hasweather;
+
+! echo "Average number of plays in a drive and the maximum number of plays in a drive with precipitation";
+select avg(maxplays), max(maxplays) from playbyplay where play = 1 and driveresult <> "KICKOFF" and prcp > 0;
