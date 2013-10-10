@@ -111,27 +111,24 @@ playaverages = FOREACH playgroup GENERATE AVG(playfiltered.maxplays), MAX(playfi
 sh echo "Average number of plays in a drive and the maximum number of plays in a drive with precipitation";
 DUMP playaverages;
 
-sh echo "Yardline where drives start";
-#select playbyplay.yardline, playbyplay.totalperplay, totalstable.total, ((playbyplay.totalperplay / totalstable.total) * 100) as percentage from  
-#(select yardline, count(*) as totalperplay from playbyplay where play = 1 and driveresult <> "KICKOFF" GROUP BY yardline) playbyplay 
-#full outer join
-#  (select count(*) as total from playbyplay where play = 1 and driveresult <> "KICKOFF") totalstable 
-#order by yardline;
+-- Next query
 
 firstplay = FILTER playbyplay BY play == 1 and driveresult != 'KICKOFF';
 
 playbyyardline = GROUP firstplay BY yardline;
 
-yardcounts = FOREACH playbyyardline {
-	sorted = ORDER firstplay by group;
-	GENERATE group, COUNT(firstplay) as totalperyard;
-};
+yardcounts = FOREACH playbyyardline GENERATE group, COUNT(firstplay) as totalperyard;
 
 firstplaygroup = GROUP firstplay ALL;
 
 firstplaycounts = FOREACH firstplaygroup GENERATE COUNT(firstplay) as totalplays;
 
 yardscrossed = CROSS firstplaycounts, yardcounts;
-# yardcounts::group, 
-yardscalculated = FOREACH yardscrossed GENERATE yardcounts::totalperyard, firstplaycounts::totalplays, 
+
+yardscalculated = FOREACH yardscrossed GENERATE yardcounts::group, yardcounts::totalperyard, firstplaycounts::totalplays, 
 	(yardcounts::totalperyard / firstplaycounts::totalplays) * 100;
+
+yardscalculatedsorted = ORDER yardscalculated by group;
+
+sh echo "Yardline where drives start";
+DUMP yardscalculatedsorted;
