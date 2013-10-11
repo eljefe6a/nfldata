@@ -92,3 +92,13 @@ hadoop.log.2013-07-14
 hadoop.log.2013-07-15
 output.txt
 output_bu.txt
+src/ArrestJoinDriver.class
+src/ArrestJoinMapper.class
+src/GameWinnerReducer.class
+src/Incompletes.class
+src/IncompletesMapper.class
+src/IndexReducer.class
+src/PassWritable.class
+playbyplay.jar
+src/PlayByPlayDriver.class
+src/PlayByPlayMapper.class
