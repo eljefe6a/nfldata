@@ -10,6 +10,7 @@ ETL Series
 
 This program takes the play by play dataset and merges it with other datasets like arrests, stadiums and weather.   
 
+Set things up by running the setup.sh script or run the following steps manually:   
 Run the PlayByPlayDriver on the play by data data.   
 Run the ArrestJoinDriver on the data from PlayByPlayDriver. (place in HDFS under joinedoutput)      
 Put the stadiums.csv in HDFS in a directory called stadium.      
