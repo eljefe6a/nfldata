@@ -718,3 +718,12 @@ select offense, hasweather, avg(maxplays), max(maxplays) from playbyplay where p
 
 ! echo "Average number of plays in a drive and the maximum number of plays in a drive with precipitation";
 select avg(maxplays), max(maxplays) from playbyplay where play = 1 and driveresult <> "KICKOFF" and prcp > 0;
+
+! echo "Touchbacks";
+! echo "Touchbacks by year";
+select playbyplay.year, playbyplay.totaltouchbackperyear, totalstable.totalperyear, ((playbyplay.totaltouchbackperyear / totalstable.totalperyear) * 100) as percentage from  
+  (select count(*) as totaltouchbackperyear, year from playbyplay where playtype = "KICKOFF" and LOWER(playdesc) LIKE "%touchback%" GROUP BY year) playbyplay 
+join
+  (select count(*) as totalperyear, year from playbyplay where playtype = "KICKOFF" GROUP BY year) totalstable 
+on (totalstable.year = playbyplay.year)
+order by year;
