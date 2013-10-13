@@ -16,14 +16,14 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 
 	/** (14:56) E.Manning pass incomplete deep left to H.Nicks. */
 	Pattern incompletePass = Pattern
-			.compile("([A-Za-z]*\\.?\\s?[A-Za-z]*)\\s*pass.*incomplete.*(to ([A-Z]*\\.\\s?[A-Za-z]*))?");
+			.compile("([A-Za-z]*\\.?\\s?[A-Za-z]*)\\s*pass.*incomplete.*(to ([A-Za-z]*\\.?\\s?[A-Za-z]*))?");
 
 	/**
 	 * (11:28) (Shotgun) J.Cutler pass short right intended for M.Forte
 	 * INTERCEPTED by J.Freeman at CHI 4. J.Freeman for 4 yards TOUCHDOWN.
 	 */
 	Pattern interception = Pattern
-			.compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*intended for.*INTERCEPTED by ([A-Z]*\\.\\s?[A-Za-z]*)");
+			.compile("([A-Za-z]*\\.\\s?[A-Za-z]*).*intended for.*INTERCEPTED by ([A-Za-z]*\\.?\\s?[A-Za-z]*)");
 
 	/**
 	 * (14:49) E.Manning pass short middle to V.Cruz to NYG 21 for 5 yards
