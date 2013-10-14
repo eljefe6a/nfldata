@@ -503,12 +503,12 @@ order by hometeam, hasWeather;
 
 ! echo "hasWeather false";
 select * from
-  (select hometeam, hasWeather, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
-    (select hometeam, homeTeamScore, AwayTeamScore, hasWeather from playbyplay
+  (select hometeam, avg(HomeTeamScore) as homeTeamAverage, avg(AwayTeamScore) as awayTeamAverage from 
+    (select hometeam, homeTeamScore, AwayTeamScore from playbyplay
     where hasWeather = false OR rooftype <> "None"
-    group by game, hometeam, homeTeamScore, AwayTeamScore, hasWeather) playbyplay
-  group by hometeam, hasWeather) playbyplay
-order by hometeam, hasWeather;
+    group by game, hometeam, homeTeamScore, AwayTeamScore) playbyplay
+  group by hometeam) playbyplay
+order by hometeam;
 
 ! echo "****** Field goals makes by weather type ******";
 ! echo "hasWeatherInVicinity true";
