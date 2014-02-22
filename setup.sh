@@ -1,5 +1,7 @@
 #/bin/bash
 
+BASEDIR=/user/cloudera
+
 echo "Compiling MR"
 cd src
 javac -classpath `hadoop classpath` *.java
@@ -7,23 +9,23 @@ jar cf ../playbyplay.jar *.class
 cd ..
 
 echo "Deleting files in HDFS"
-hadoop fs -rm -r input
-hadoop fs -rm -r playoutput
-hadoop fs -rm -r joinedoutput
-hadoop fs -rm -r weather
-hadoop fs -rm -r stadium
+hadoop fs -rm -r $BASEDIR/input
+hadoop fs -rm -r $BASEDIR/playoutput
+hadoop fs -rm -r $BASEDIR/joinedoutput
+hadoop fs -rm -r $BASEDIR/weather
+hadoop fs -rm -r $BASEDIR/stadium
 
 echo "Putting files in HDFS"
-hadoop fs -put -f input
-hadoop fs -mkdir weather
-hadoop fs -put -f 173328.csv weather/
-hadoop fs -mkdir stadium
-hadoop fs -put -f stadiums.csv stadium/
-hadoop fs -put -f arrests.csv 
+hadoop fs -put -f input $BASEDIR/input
+hadoop fs -mkdir $BASEDIR/weather
+hadoop fs -put -f 173328.csv $BASEDIR/weather/
+hadoop fs -mkdir $BASEDIR/stadium
+hadoop fs -put -f stadiums.csv $BASEDIR/stadium/
+hadoop fs -put -f arrests.csv $BASEDIR/arrests.csv 
 
 echo "Running MR Jobs"
-hadoop jar playbyplay.jar PlayByPlayDriver input playoutput
-hadoop jar playbyplay.jar ArrestJoinDriver playoutput joinedoutput arrests.csv
+hadoop jar playbyplay.jar PlayByPlayDriver $BASEDIR/input $BASEDIR/playoutput
+hadoop jar playbyplay.jar ArrestJoinDriver $BASEDIR/playoutput $BASEDIR/joinedoutput $BASEDIR/arrests.csv
 
 echo "Running Hive queries"
 hive -S -f playbyplay_tablecreate.hql
