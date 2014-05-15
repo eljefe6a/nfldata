@@ -1,99 +1,84 @@
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
-
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.log4j.Logger;
 
-public class GameWinnerReducer extends Reducer<Text, Text, Text, Text> {
+import com.jesseanderson.data.Play;
+
+public class GameWinnerReducer extends Reducer<Text, Play, NullWritable, Play> {
 	Logger logger = Logger.getLogger(GameWinnerReducer.class);
-	
-	private static final char OUTPUT_SEPARATOR = '\t';
-	
-	/** 20120923_KC@NO 5 -9 32 KC NO 3 6 13 */
-	Pattern lastPlay = Pattern.compile("\\t([4|5])\\t(-?\\d*)\\t(\\d\\d)\\t");
 
 	@Override
-	public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-		ArrayList<Text> allValues = new ArrayList<Text>();
-		
+	public void reduce(Text key, Iterable<Play> values, Context context) throws IOException, InterruptedException {
+		ArrayList<Play> allPlaysForGame = new ArrayList<Play>();
+
 		// Find the last play of the game to see who wins
-		// Note: this should be done with a secondary sort and not have to cache the values
+		// Note: this should be done with a secondary sort and not have to cache
+		// the values
 		// but more importantly because of sorting
 		int currentLowMinute = 60;
 		int currentLowSecond = 60;
 		int currentHighestQuarter = 0;
-		String currentEnd = null;
+		Play currentEndPlay = null;
 
-		for (Text value : values) {
-			allValues.add(new Text(value));
-			
-			// Process the game output
-			String play = value.toString();
-
-			Matcher gameMatcher = lastPlay.matcher(play);
+		for (Play currentPlay : values) {
+			allPlaysForGame.add(currentPlay);
 
 			// Minutes in overtime are negative
-			// 20120923_KC@NO 5 -9 32 KC NO 3 6 13 (6:32) R.Succop 31 yard field goal is GOOD Center-T.Gafford
-			// Holder-D.Colquitt. 24 24 2012 null null false false false false RUN NO KC 20120923 NO
-			if (gameMatcher.find()) {
-				int quarter = Integer.parseInt(gameMatcher.group(1));
-				int minutes = Integer.parseInt(gameMatcher.group(2));
-				int seconds = Integer.parseInt(gameMatcher.group(3));
+			// 20120923_KC@NO 5 -9 32 KC NO 3 6 13 (6:32) R.Succop 31 yard field
+			// goal is GOOD Center-T.Gafford
+			// Holder-D.Colquitt. 24 24 2012 null null false false false false
+			// RUN NO KC 20120923 NO
+			if (currentPlay.getQuarter() >= currentHighestQuarter && currentPlay.getGameMinutes() <= currentLowMinute
+					&& currentPlay.getGameSeconds() < currentLowSecond) {
+				currentHighestQuarter = currentPlay.getQuarter();
+				currentLowMinute = currentPlay.getGameMinutes();
+				currentLowSecond = currentPlay.getGameSeconds();
 
-				if (quarter >= currentHighestQuarter && minutes <= currentLowMinute && seconds < currentLowSecond) {
-					currentHighestQuarter = quarter;
-					currentLowMinute = minutes;
-					currentLowSecond = seconds;
-
-					currentEnd = play;
-				}
-
-				continue;
+				currentEndPlay = currentPlay;
 			}
+
+			continue;
 		}
-		
-		if (currentEnd == null) {
-			// Game doesn't contain the ending.  Skip the game
+
+		if (currentEndPlay == null) {
+			// Game doesn't contain the ending. Skip the game
 			logger.warn("Current end is null");
-			
+
 			return;
 		}
-		
-		StringBuilder output = new StringBuilder();
 
-		String[] pieces = currentEnd.split("\\t", -1);
+		int offenseScore = currentEndPlay.getOffenseScore();
+		int defenseScore = currentEndPlay.getDefenseScore();
 
-		int offenseScore = Integer.parseInt(pieces[10].trim());
-		int defenseScore = Integer.parseInt(pieces[11].trim());
 		// Desc at 9 - Home team at 22 Away team at 23
-		if (offenseScore == defenseScore) {
+		if (currentEndPlay.getOffenseScore() == currentEndPlay.getDefenseScore()) {
 			// Last play of the game won
-			output.append(pieces[4]).append(OUTPUT_SEPARATOR);
-			
 			// Try to figure out what the last play was
-			if (pieces[9].toUpperCase().indexOf("TOUCHDOWN") != -1) {
+			if (currentEndPlay.getPlayType().toString().indexOf("TOUCHDOWN") != -1) {
 				// It was a touchdown
 				offenseScore += 7;
 			} else {
 				// Otherwise, it was probably a field goal
 				offenseScore += 3;
 			}
+
+			currentEndPlay.setWinner(currentEndPlay.getOffense());
 		} else if (offenseScore > defenseScore) {
 			// Offense won the game
-			output.append(pieces[4]).append(OUTPUT_SEPARATOR);
+			currentEndPlay.setWinner(currentEndPlay.getOffense());
 		} else {
 			// Defense won the game
-			output.append(pieces[5]).append(OUTPUT_SEPARATOR);
+			currentEndPlay.setWinner(currentEndPlay.getDefense());
 		}
-		
+
 		// Was the home team on offense to output the winning score?
 		int homeTeamScore, awayTeamScore;
-		
-		if (pieces[4].equals(pieces[22])) {
+
+		if (currentEndPlay.getHomeTeam().equals(currentEndPlay.getOffense())) {
 			homeTeamScore = offenseScore;
 			awayTeamScore = defenseScore;
 		} else {
@@ -101,11 +86,16 @@ public class GameWinnerReducer extends Reducer<Text, Text, Text, Text> {
 			awayTeamScore = offenseScore;
 		}
 
-		output.append(homeTeamScore).append(OUTPUT_SEPARATOR);
-		output.append(awayTeamScore);
-		
-		for (Text value : allValues) {
-			context.write(value, new Text(output.toString()));
+		currentEndPlay.setHomeTeamScore(homeTeamScore);
+		currentEndPlay.setAwayTeamScore(awayTeamScore);
+
+		for (Play value : allPlaysForGame) {
+			if (value != currentEndPlay)
+				value.setWinner(currentEndPlay.getWinner());
+			value.setHomeTeamScore(currentEndPlay.getHomeTeamScore());
+			value.setAwayTeamScore(currentEndPlay.getAwayTeamScore());
+
+			context.write(NullWritable.get(), value);
 		}
 	}
 }

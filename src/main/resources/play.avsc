@@ -1,0 +1,178 @@
+{
+  "type": "record",
+  "name": "Play",
+  "namespace": "com.jesseanderson.data",
+  "doc": "A play in game",
+  "fields": [
+    {
+      "name": "game",
+      "type": "string",
+      "doc": "Game Id"
+    },
+    {
+      "name": "quarter",
+      "type": "int",
+      "doc": "Game Quarter"
+    },
+    {
+      "name": "gameMinutes",
+      "type": "int",
+      "doc": "Game time countdown left in minutes"
+    },
+    {
+      "name": "gameSeconds",
+      "type": "int",
+      "doc": "Game time countdown left in seconds"
+    },
+    {
+      "name": "offense",
+      "type": "string",
+      "doc": "Team on offense"
+    },
+    {
+      "name": "defense",
+      "type": "string",
+      "doc": "Team on defense"
+    },
+    {
+      "name": "down",
+      "type": "int",
+      "doc": "Down number"
+    },
+    {
+      "name": "yardsToGo",
+      "type": "int",
+      "doc": "Number of yards for a first down"
+    },
+    {
+      "name": "yardLine",
+      "type": "int",
+      "doc": "Yard line where the ball is"
+    },
+    {
+      "name": "playDesc",
+      "type": "string",
+      "doc": "The original description of the play"
+    },
+    {
+      "name": "offenseScore",
+      "type": "int",
+      "doc": "The offenses score as of the current play"
+    },
+    {
+      "name": "defenseScore",
+      "type": "int",
+      "doc": "The defenses score as of the current play"
+    },
+    {
+      "name": "year",
+      "type": "int",
+      "doc": "The year of the season"
+    },
+    {
+      "name": "QB",
+      "type": "string",
+      "doc": "The QB/Punter/Kicker in a play"
+    },
+    {
+      "name": "offensivePlayer",
+      "type": "string",
+      "doc": "The receiver or runner"
+    },
+    {
+      "name": "defensivePlayer1",
+      "type": "string",
+      "doc": "The name of the defensive player on the play"
+    },
+    {
+      "name": "DefensivePlayer2",
+      "type": "string",
+      "doc": "The name of the other defensive player on the play"
+    },
+    {
+      "name": "penalty",
+      "type": "boolean",
+      "doc": "Whether or not there was a penalty on the play"
+    },
+    {
+      "name": "fumble",
+      "type": "boolean",
+      "doc": "Whether or not there was a fumble on the play"
+    },
+    {
+      "name": "incomplete",
+      "type": "boolean",
+      "doc": "Whether or not there was an incomplete pass on the play"
+    },
+    {
+      "name": "isGoalGood",
+      "type": "boolean",
+      "doc": "For a extra point or field goal kick, whether or not there it was good"
+    },
+    {
+      "name": "playType",
+      "type": "string",
+      "doc": "(Possible Values:PASS,INTERCEPTION,PASS,PUNT,RUN,KICKOFF,SPIKE,FIELDGOAL,EXTRAPOINT,PENALTY,FUMBLE,SACK,KNEEL,REVIEWSCRAMBLE,END) - The type of play that was run"
+    },
+    {
+      "name": "homeTeam",
+      "type": "string",
+      "doc": "The name of the home team"
+    },
+    {
+      "name": "awayTeam",
+      "type": "string",
+      "doc": "The name of the away team"
+    },
+    {
+      "name": "DatePlayed",
+      "type": "string",
+      "doc": "The data of the game"
+    },
+    {
+      "name": "PlayId",
+      "type": "string",
+      "doc": "The unique id of the play"
+    },
+    {
+      "name": "winner",
+      "type": "string",
+      "doc": "The name of the team that eventually wins"
+    },
+    {
+      "name": "homeTeamScore",
+      "type": "int",
+      "doc": "The home teams score at the end of the game"
+    },
+    {
+      "name": "awayTeamScore",
+      "type": "int",
+      "doc": "The away teams score at the end of the game"
+    },
+    {
+      "name": "PlayerArrested",
+      "type": "boolean",
+      "doc": "Was a player in the play arrested that season"
+    },
+    {
+      "name": "OffensePlayerArrested",
+      "type": "boolean",
+      "doc": "Offense had player arrested in season"
+    },
+    {
+      "name": "DefensePlayerArrested",
+      "type": "boolean",
+      "doc": "Defense had player arrested in season"
+    },
+    {
+      "name": "HomeTeamPlayerArrested",
+      "type": "boolean",
+      "doc": "Home team had player arrested in season"
+    },
+    {
+      "name": "AwayTeamPlayerArrested",
+      "type": "boolean",
+      "doc": "Away team had player arrested in season"
+    }
+  ]
+}

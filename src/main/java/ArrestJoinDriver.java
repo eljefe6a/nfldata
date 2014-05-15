@@ -17,7 +17,7 @@ public class ArrestJoinDriver extends Configured implements Tool {
       return -1;
     }
 
-    Job job = new Job(getConf());
+    Job job = Job.getInstance(getConf());
     job.setJarByClass(ArrestJoinDriver.class);
     job.setJobName("Arrest Joiner");
     

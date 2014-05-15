@@ -17,7 +17,7 @@
 <configuration>
   <property>
     <name>hive.metastore.uris</name>
-    <value>thrift://dev.loudacre.com:9083</value>
+    <value>thrift://localhost.localdomain:9083</value>
   </property>
   <property>
     <name>hive.metastore.warehouse.dir</name>

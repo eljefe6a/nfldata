@@ -9,11 +9,11 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<mrunit.version>1.0.0</mrunit.version>
-		<hadoopclient.version>2.0.0-cdh4.5.0</hadoopclient.version>
+		<hadoopclient.version>2.3.0-cdh5.0.0</hadoopclient.version>
 		<httpclient.version>3.1</httpclient.version>
-		<kite.version>0.13.0</kite.version>
+		<kite.version>0.14.0</kite.version>
 		<avro.version>1.7.4</avro.version>
-		<hcatalog.version>0.5.0-cdh4.5.0</hcatalog.version>
+		<hcatalog.version>0.12.0-cdh5.0.0</hcatalog.version>
 		<maveneclipse.version>2.9</maveneclipse.version>
 		<jaxp.version>1.4</jaxp.version>
 	</properties>
@@ -42,6 +42,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.kitesdk</groupId>
+			<artifactId>kite-data-mapreduce</artifactId>
+			<version>${kite.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kitesdk</groupId>
 			<artifactId>kite-data-hcatalog</artifactId>
 			<version>${kite.version}</version>
 		</dependency>
@@ -51,8 +56,8 @@
 			<version>${avro.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.hcatalog</groupId>
-			<artifactId>hcatalog-core</artifactId>
+			<groupId>org.apache.hive.hcatalog</groupId>
+			<artifactId>hive-hcatalog-core</artifactId>
 			<version>${hcatalog.version}</version>
 		</dependency>
 		<!-- Used to get XML classes -->
@@ -87,7 +92,7 @@
 				<version>${maveneclipse.version}</version>
 				<configuration>
 					<downloadSources>false</downloadSources>
-					<downloadJavadocs>false</downloadJavadocs>
+					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 			</plugin>
 		</plugins>

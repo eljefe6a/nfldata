@@ -17,7 +17,7 @@ public class Incompletes extends Configured implements Tool {
       return -1;
     }
 
-    Job job = new Job(getConf());
+    Job job = Job.getInstance(getConf());
     job.setJarByClass(Incompletes.class);
     job.setJobName("Most Incomplete");
 

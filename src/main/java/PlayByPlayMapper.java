@@ -9,10 +9,10 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.log4j.Logger;
 
-public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
-	Logger logger = Logger.getLogger(PlayByPlayMapper.class);
+import com.jesseanderson.data.Play;
 
-	private static final char OUTPUT_SEPARATOR = '\t';
+public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Play> {
+	Logger logger = Logger.getLogger(PlayByPlayMapper.class);
 
 	/** (14:56) E.Manning pass incomplete deep left to H.Nicks. */
 	Pattern incompletePass = Pattern
@@ -246,8 +246,6 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 			return;
 		}
 
-		StringBuilder output = new StringBuilder();
-
 		// Process the game output
 		Matcher gameMatcher = gameString.matcher(pieces[0]);
 
@@ -272,21 +270,21 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 			logger.warn("Game did not match \"" + line + "\"");
 			return;
 		}
-
-		// Add all of the pieces
-		for (int i = 0; i < pieces.length; i++) {
-			// Normalize output across all seasons by removing extra info
-			if (piecesIndex == 11) {
-				if (i == 9 || i == 10 || i == 12 || i == 13 || i == 14) {
-					continue;
-				}
-
-				output.append(pieces[i]).append(OUTPUT_SEPARATOR);
-			} else {
-				output.append(pieces[i]).append(OUTPUT_SEPARATOR);
-			}
-		}
-
+		
+		Play play = new Play();
+		play.setGame(pieces[0]);
+		play.setQuarter(Integer.parseInt(pieces[1]));
+		play.setGameMinutes(getInt(pieces[2]));
+		play.setGameSeconds(getInt(pieces[3]));
+		play.setOffense(pieces[4]);
+		play.setDefense(pieces[5]);
+		play.setDown(getInt(pieces[6]));
+		play.setYardsToGo(getInt(pieces[7]));
+		play.setYardLine(getInt(pieces[8]));
+		play.setPlayDesc(pieces[9]);
+				
+		// Normalize output across all seasons by removing extra info
+		
 		// Check that extracted data isn't from missing groups
 		if (qb == null) {
 			qb = "";
@@ -305,26 +303,45 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 		}
 
 		// Process the play by play data
-		output.append(qb).append(OUTPUT_SEPARATOR);
-		output.append(offensivePlayer).append(OUTPUT_SEPARATOR);
-		output.append(defensivePlayer1).append(OUTPUT_SEPARATOR);
-		output.append(defensivePlayer2).append(OUTPUT_SEPARATOR);
-		output.append(hasPenalty).append(OUTPUT_SEPARATOR);
-		output.append(hasFumble).append(OUTPUT_SEPARATOR);
-		output.append(hasIncomplete).append(OUTPUT_SEPARATOR);
-		output.append(isGoalGood).append(OUTPUT_SEPARATOR);
-		output.append(playType).append(OUTPUT_SEPARATOR);
-
-		// Process the game output
-		output.append(gameMatcher.group(3)).append(OUTPUT_SEPARATOR);
-		output.append(gameMatcher.group(2)).append(OUTPUT_SEPARATOR);
-		output.append(gameMatcher.group(1)).append(OUTPUT_SEPARATOR);
+		play.setQB(qb);
+		play.setOffensivePlayer(offensivePlayer);
+		play.setDefensivePlayer1(defensivePlayer1);
+		play.setDefensivePlayer2(defensivePlayer2);
+		play.setPenalty(hasPenalty);
+		play.setFumble(hasFumble);
+		play.setIncomplete(hasIncomplete);
+		play.setIsGoalGood(isGoalGood);
+		play.setPlayType(playType.toUpperCase());
 		
-		// Output the unique id of the play
-		output.append(idPrefix).append("_").append(StringUtils.leftPad(String.valueOf(id), 8, "0"));
+		play.setHomeTeam(gameMatcher.group(3));
+		play.setAwayTeam(gameMatcher.group(2));
+		play.setDatePlayed(gameMatcher.group(1));
+		
+		play.setPlayId(idPrefix + "_" + StringUtils.leftPad(String.valueOf(id), 8, "0"));
 		id++;
 		
-		context.write(new Text(pieces[0]), new Text(output.toString()));
+		play.setWinner("UNKNOWN");
+		
+		context.write(new Text(pieces[0]), play);
+	}
+	
+	/**
+	 * Parses the number out of a string while handling exceptions
+	 * @param numberString
+	 * @return
+	 */
+	private int getInt(String numberString) {
+		int number = 0;
+		
+		if (!numberString.equals("")) {
+			try {
+				number = Integer.parseInt(numberString);
+			} catch (Exception e) {
+				logger.warn("Repacing non-number with zero. Number was \"" + numberString + "\"");
+			}
+		}
+		
+		return number;
 	}
 
 	@Override
@@ -335,6 +352,6 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Text> {
 		idPrefix = fileSplit.getPath().getName();
 		
 		// Crop until the first underscore
-		idPrefix = idPrefix.substring(0, idPrefix.indexOf("_"));
+		// idPrefix = idPrefix.substring(0, idPrefix.indexOf("_"));
 	}
 }
