@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.apache.avro.mapred.AvroKey;
+import org.apache.avro.mapred.AvroValue;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -8,11 +10,11 @@ import org.apache.log4j.Logger;
 
 import com.jesseanderson.data.Play;
 
-public class GameWinnerReducer extends Reducer<Text, Play, NullWritable, Play> {
+public class GameWinnerReducer extends Reducer<AvroKey<Text>, AvroValue<Play>, Play, Void> {
 	Logger logger = Logger.getLogger(GameWinnerReducer.class);
 
 	@Override
-	public void reduce(Text key, Iterable<Play> values, Context context) throws IOException, InterruptedException {
+	public void reduce(AvroKey<Text> key, Iterable<AvroValue<Play>> values, Context context) throws IOException, InterruptedException {
 		ArrayList<Play> allPlaysForGame = new ArrayList<Play>();
 
 		// Find the last play of the game to see who wins
@@ -24,7 +26,8 @@ public class GameWinnerReducer extends Reducer<Text, Play, NullWritable, Play> {
 		int currentHighestQuarter = 0;
 		Play currentEndPlay = null;
 
-		for (Play currentPlay : values) {
+		for (AvroValue<Play> currentPlayValue : values) {
+			Play currentPlay = currentPlayValue.datum();
 			allPlaysForGame.add(currentPlay);
 
 			// Minutes in overtime are negative
@@ -95,7 +98,7 @@ public class GameWinnerReducer extends Reducer<Text, Play, NullWritable, Play> {
 			value.setHomeTeamScore(currentEndPlay.getHomeTeamScore());
 			value.setAwayTeamScore(currentEndPlay.getAwayTeamScore());
 
-			context.write(NullWritable.get(), value);
+			context.write(value, null);
 		}
 	}
 }

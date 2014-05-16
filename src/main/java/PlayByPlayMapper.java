@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.avro.mapred.AvroKey;
+import org.apache.avro.mapred.AvroValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -11,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.jesseanderson.data.Play;
 
-public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Play> {
+public class PlayByPlayMapper extends Mapper<LongWritable, Text, AvroKey<Text>, AvroValue<Play>> {
 	Logger logger = Logger.getLogger(PlayByPlayMapper.class);
 
 	/** (14:56) E.Manning pass incomplete deep left to H.Nicks. */
@@ -322,7 +324,7 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, Text, Play> {
 		
 		play.setWinner("UNKNOWN");
 		
-		context.write(new Text(pieces[0]), play);
+		context.write(new AvroKey<Text>(new Text(pieces[0])), new AvroValue<Play>(play));
 	}
 	
 	/**

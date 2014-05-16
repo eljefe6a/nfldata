@@ -12,7 +12,7 @@
 		<hadoopclient.version>2.3.0-cdh5.0.0</hadoopclient.version>
 		<httpclient.version>3.1</httpclient.version>
 		<kite.version>0.14.0</kite.version>
-		<avro.version>1.7.4</avro.version>
+		<avro.version>1.7.5</avro.version>
 		<hcatalog.version>0.12.0-cdh5.0.0</hcatalog.version>
 		<maveneclipse.version>2.9</maveneclipse.version>
 		<jaxp.version>1.4</jaxp.version>
@@ -72,7 +72,7 @@
 			<plugin>
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro-maven-plugin</artifactId>
-				<version>${avro.version}</version>
+				<version>1.7.4</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>

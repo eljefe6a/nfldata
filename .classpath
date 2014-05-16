@@ -119,11 +119,19 @@
       <attribute value="jar:file:/home/cloudera/.m2/repository/org/slf4j/slf4j-log4j12/1.7.5/slf4j-log4j12-1.7.5-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-core-asl/1.8.8/jackson-core-asl-1.8.8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-mapper-asl/1.8.8/jackson-mapper-asl-1.8.8.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/avro/avro/1.7.4/avro-1.7.4.jar">
+  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-core-asl/1.9.13/jackson-core-asl-1.9.13.jar">
     <attributes>
-      <attribute value="jar:file:/home/cloudera/.m2/repository/org/apache/avro/avro/1.7.4/avro-1.7.4-javadoc.jar!/" name="javadoc_location"/>
+      <attribute value="jar:file:/home/cloudera/.m2/repository/org/codehaus/jackson/jackson-core-asl/1.9.13/jackson-core-asl-1.9.13-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/codehaus/jackson/jackson-mapper-asl/1.9.13/jackson-mapper-asl-1.9.13.jar">
+    <attributes>
+      <attribute value="jar:file:/home/cloudera/.m2/repository/org/codehaus/jackson/jackson-mapper-asl/1.9.13/jackson-mapper-asl-1.9.13-javadoc.jar!/" name="javadoc_location"/>
+    </attributes>
+  </classpathentry>
+  <classpathentry kind="var" path="M2_REPO/org/apache/avro/avro/1.7.5/avro-1.7.5.jar">
+    <attributes>
+      <attribute value="jar:file:/home/cloudera/.m2/repository/org/apache/avro/avro/1.7.5/avro-1.7.5-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3.jar">
@@ -131,9 +139,9 @@
       <attribute value="jar:file:/home/cloudera/.m2/repository/com/thoughtworks/paranamer/paranamer/2.3/paranamer-2.3-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/xerial/snappy/snappy-java/1.0.4.1/snappy-java-1.0.4.1.jar">
+  <classpathentry kind="var" path="M2_REPO/org/xerial/snappy/snappy-java/1.0.5/snappy-java-1.0.5.jar">
     <attributes>
-      <attribute value="jar:file:/home/cloudera/.m2/repository/org/xerial/snappy/snappy-java/1.0.4.1/snappy-java-1.0.4.1-javadoc.jar!/" name="javadoc_location"/>
+      <attribute value="jar:file:/home/cloudera/.m2/repository/org/xerial/snappy/snappy-java/1.0.5/snappy-java-1.0.5-javadoc.jar!/" name="javadoc_location"/>
     </attributes>
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-compress/1.4.1/commons-compress-1.4.1.jar">

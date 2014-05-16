@@ -1,3 +1,6 @@
+import org.apache.avro.Schema;
+import org.apache.avro.mapreduce.AvroJob;
+import org.apache.avro.mapreduce.AvroKeyValueOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -31,17 +34,20 @@ public class PlayByPlayDriver extends Configured implements Tool {
 		job.setJobName("Play by Play parser");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
-		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		//FileOutputFormat.setOutputPath(job, new Path(args[1] + "123"));
 
 		job.setMapperClass(PlayByPlayMapper.class);
 		job.setReducerClass(GameWinnerReducer.class);
 
-		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(Play.class);
-
-		job.setOutputKeyClass(NullWritable.class);
+		AvroJob.setMapOutputKeySchema(job, Schema.create(Schema.Type.STRING));
+		AvroJob.setMapOutputValueSchema(job, Play.getClassSchema());
+		
+		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Play.class);
-
+		AvroJob.setOutputKeySchema(job, Play.getClassSchema());
+		
+		//job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
+		
 		String repositoryUri = "repo:hive:" + args[1];
 
 		job.setOutputFormatClass(DatasetKeyOutputFormat.class);
@@ -63,7 +69,7 @@ public class PlayByPlayDriver extends Configured implements Tool {
 		DatasetDescriptor descriptor = new DatasetDescriptor.Builder()
 				.schemaUri("resource:play.avsc").build();
 		repo.create(PHASE_ONE_MR, descriptor);
-
+		
 		boolean success = job.waitForCompletion(true);
 		return success ? 0 : 1;
 	}
