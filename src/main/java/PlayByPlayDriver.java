@@ -34,7 +34,6 @@ public class PlayByPlayDriver extends Configured implements Tool {
 		job.setJobName("Play by Play parser");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
-		//FileOutputFormat.setOutputPath(job, new Path(args[1] + "123"));
 
 		job.setMapperClass(PlayByPlayMapper.class);
 		job.setReducerClass(GameWinnerReducer.class);
@@ -45,8 +44,6 @@ public class PlayByPlayDriver extends Configured implements Tool {
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Play.class);
 		AvroJob.setOutputKeySchema(job, Play.getClassSchema());
-		
-		//job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
 		
 		String repositoryUri = "repo:hive:" + args[1];
 
