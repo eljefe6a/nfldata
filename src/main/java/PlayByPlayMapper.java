@@ -105,6 +105,9 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, AvroKey<Text>, 
 
 	String idPrefix = null;
 	int id = 0;
+	
+	AvroKey<Text> outputKey = new AvroKey<Text>();
+	AvroValue<Play> outputValue = new AvroValue<Play>();
 
 	@Override
 	public void map(LongWritable key, Text value, Context context)
@@ -324,7 +327,10 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, AvroKey<Text>, 
 		
 		play.setWinner("UNKNOWN");
 		
-		context.write(new AvroKey<Text>(new Text(pieces[0])), new AvroValue<Play>(play));
+		outputKey.datum(new Text(play.getGame().toString()));
+		outputValue.datum(play);
+		
+		context.write(outputKey, outputValue);
 	}
 	
 	/**
