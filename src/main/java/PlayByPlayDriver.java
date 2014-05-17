@@ -16,7 +16,7 @@ import org.kitesdk.data.mapreduce.DatasetKeyOutputFormat;
 import com.jesseanderson.data.Play;
 
 public class PlayByPlayDriver extends Configured implements Tool {
-	private static final String PHASE_ONE_MR = "phaseone";
+	public static final String PHASE_ONE_MR = "phaseone";
 
 	public int run(String[] args) throws Exception {
 

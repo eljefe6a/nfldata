@@ -3,10 +3,7 @@
 BASEDIR=/user/cloudera
 
 echo "Compiling MR"
-cd src
-javac -classpath `hadoop classpath` *.java
-jar cf ../playbyplay.jar *.class
-cd ..
+mvn package
 
 echo "Deleting files in HDFS"
 hadoop fs -rm -r $BASEDIR/input
