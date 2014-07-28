@@ -1,6 +1,9 @@
 #/bin/bash
 
 BASEDIR=/user/cloudera
+BASEREPO=repo:hive:$BASEDIR
+
+LIBJARS=~/.m2/repository/org/apache/avro/avro-mapred/1.7.5-cdh5.0.0/avro-mapred-1.7.5-cdh5.0.0.jar
 
 echo "Compiling MR"
 mvn package
@@ -21,14 +24,17 @@ hadoop fs -put -f stadiums.csv $BASEDIR/stadium/
 hadoop fs -put -f arrests.csv $BASEDIR/arrests.csv 
 
 echo "Running MR Jobs"
-hadoop jar playbyplay.jar PlayByPlayDriver $BASEDIR/input $BASEDIR/playoutput
-hadoop jar playbyplay.jar ArrestJoinDriver $BASEDIR/playoutput $BASEDIR/joinedoutput $BASEDIR/arrests.csv
+hadoop jar target/playbyplay-1.0-SNAPSHOT.jar PlayByPlayDriver -libjars $LIBJARS $BASEDIR/input $BASEREPO/playoutput
+hadoop jar target/playbyplay-1.0-SNAPSHOT.jar -libjars $LIBJARS ArrestJoinDriver $BASEREPO/playoutput $BASEREPO/joinedoutput $BASEDIR/arrests.csv
 
 echo "Running Hive queries"
-hive -S -f playbyplay_tablecreate.hql
-hive -S -f playbyplay_join.hql
-hive -S -f adddrives.hql
-hive -S -f adddriveresult.hql
+hive -f playbyplay_tablecreate.hql
+echo "Doing play, stadium and weather joins"
+hive -f playbyplay_join.hql
+echo "Adding drives"
+hive -f adddrives.hql
+echo "Add drive results"
+hive -f adddriveresult.hql
 
 echo "All done importing the data"
 echo ""

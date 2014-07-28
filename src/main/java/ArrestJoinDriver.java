@@ -49,17 +49,19 @@ public class ArrestJoinDriver extends Configured implements Tool {
 		AvroJob.setOutputKeySchema(job, Play.getClassSchema());
 		AvroJob.setInputKeySchema(job, Play.getClassSchema());
 
-		String inputRepositoryUri = "repo:hive:" + args[0];
+		String inputRepositoryUri = args[0];
 
 		job.setInputFormatClass(DatasetKeyInputFormat.class);
 		job.getConfiguration().set(DatasetKeyInputFormat.KITE_DATASET_NAME, PlayByPlayDriver.PHASE_ONE_MR);
 		job.getConfiguration().set(DatasetKeyInputFormat.KITE_REPOSITORY_URI, inputRepositoryUri);
 
-		String outputRepositoryUri = "repo:hive:" + args[1];
+		String outputRepositoryUri = args[1];
 
 		job.setOutputFormatClass(DatasetKeyOutputFormat.class);
 		job.getConfiguration().set(DatasetKeyOutputFormat.KITE_DATASET_NAME, ARREST_JOIN_MR);
 		job.getConfiguration().set(DatasetKeyOutputFormat.KITE_REPOSITORY_URI, outputRepositoryUri);
+		
+		System.out.println("Input " + inputRepositoryUri + " Output:" + outputRepositoryUri);
 
 		// Create the repository object in Hive Metastore
 		DatasetRepository repo = DatasetRepositories.open(outputRepositoryUri);

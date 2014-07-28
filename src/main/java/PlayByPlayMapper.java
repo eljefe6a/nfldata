@@ -360,6 +360,6 @@ public class PlayByPlayMapper extends Mapper<LongWritable, Text, AvroKey<Text>, 
 		idPrefix = fileSplit.getPath().getName();
 		
 		// Crop until the first underscore
-		// idPrefix = idPrefix.substring(0, idPrefix.indexOf("_"));
+		idPrefix = idPrefix.substring(0, idPrefix.indexOf("_"));
 	}
 }

@@ -27,7 +27,7 @@ public class GameWinnerReducer extends Reducer<AvroKey<Text>, AvroValue<Play>, P
 
 		for (AvroValue<Play> currentPlayValue : values) {
 			Play currentPlay = currentPlayValue.datum();
-			allPlaysForGame.add(currentPlay);
+			allPlaysForGame.add(Play.newBuilder(currentPlay).build());
 
 			// Minutes in overtime are negative
 			// 20120923_KC@NO 5 -9 32 KC NO 3 6 13 (6:32) R.Succop 31 yard field

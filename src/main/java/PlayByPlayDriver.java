@@ -17,7 +17,7 @@ import com.jesseanderson.data.Play;
 
 public class PlayByPlayDriver extends Configured implements Tool {
 	public static final String PHASE_ONE_MR = "phaseone";
-
+ 
 	public int run(String[] args) throws Exception {
 
 		if (args.length != 2) {
@@ -42,22 +42,24 @@ public class PlayByPlayDriver extends Configured implements Tool {
 		job.setOutputValueClass(Play.class);
 		AvroJob.setOutputKeySchema(job, Play.getClassSchema());
 		
-		String repositoryUri = "repo:hive:" + args[1];
+		String outputRepositoryUri = args[1];
 
 		job.setOutputFormatClass(DatasetKeyOutputFormat.class);
 		job.getConfiguration().set(DatasetKeyOutputFormat.KITE_DATASET_NAME,
 				PHASE_ONE_MR);
 		job.getConfiguration().set(DatasetKeyOutputFormat.KITE_REPOSITORY_URI,
-				repositoryUri);
+				outputRepositoryUri);
 
 		// Create the repository object in Hive Metastore
-		DatasetRepository repo = DatasetRepositories.open(repositoryUri);
+		DatasetRepository repo = DatasetRepositories.open(outputRepositoryUri);
 
 		if (repo.exists(PHASE_ONE_MR)) {
 			// Delete the repo if it already exists
 			// NOTE: You wouldn't do this for production code!!!
 			repo.delete(PHASE_ONE_MR);
 		}
+		
+		System.out.println("Input " + args[0] + " Output:" + outputRepositoryUri);
 
 		// Create the repository using the Avro schema and partition
 		DatasetDescriptor descriptor = new DatasetDescriptor.Builder()
