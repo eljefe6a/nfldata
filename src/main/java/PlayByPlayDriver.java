@@ -44,6 +44,8 @@ public class PlayByPlayDriver extends Configured implements Tool {
 		
 		String outputRepositoryUri = args[1];
 
+		System.out.println("Input:" + args[0] + " Output:" + outputRepositoryUri);
+
 		job.setOutputFormatClass(DatasetKeyOutputFormat.class);
 		job.getConfiguration().set(DatasetKeyOutputFormat.KITE_DATASET_NAME,
 				PHASE_ONE_MR);
@@ -59,11 +61,8 @@ public class PlayByPlayDriver extends Configured implements Tool {
 			repo.delete(PHASE_ONE_MR);
 		}
 		
-		System.out.println("Input " + args[0] + " Output:" + outputRepositoryUri);
-
 		// Create the repository using the Avro schema and partition
-		DatasetDescriptor descriptor = new DatasetDescriptor.Builder()
-				.schemaUri("resource:play.avsc").build();
+		DatasetDescriptor descriptor = new DatasetDescriptor.Builder().schema(Play.class).build();
 		repo.create(PHASE_ONE_MR, descriptor);
 		
 		boolean success = job.waitForCompletion(true);
