@@ -7,17 +7,23 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>playbyplay</name>
 	<url>http://maven.apache.org</url>
+	
 	<properties>
 		<mrunit.version>1.0.0</mrunit.version>
 		<hadoopclient.version>2.3.0-cdh5.0.0</hadoopclient.version>
 		<httpclient.version>3.1</httpclient.version>
-		<kite.version>0.14.0</kite.version>
+		<kite.version>0.15.0</kite.version>
 		<avro.version>1.7.5</avro.version>
 		<hcatalog.version>0.12.0-cdh5.0.0</hcatalog.version>
 		<maveneclipse.version>2.9</maveneclipse.version>
 		<jaxp.version>1.4</jaxp.version>
 	</properties>
 	<dependencies>
+	<dependency>
+      <groupId>org.kitesdk.examples</groupId>
+      <artifactId>demo-core</artifactId>
+      <version>${kite.version}</version>
+    </dependency>
 		<dependency>
 			<groupId>org.apache.mrunit</groupId>
 			<artifactId>mrunit</artifactId>
@@ -95,6 +101,10 @@
 					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
 			</plugin>
+      <plugin>
+        <groupId>org.kitesdk</groupId>
+        <artifactId>kite-maven-plugin</artifactId>
+      </plugin>
 		</plugins>
 	</build>
 
