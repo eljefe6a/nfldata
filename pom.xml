@@ -13,65 +13,148 @@
 		<hadoopclient.version>2.3.0-cdh5.0.0</hadoopclient.version>
 		<httpclient.version>3.1</httpclient.version>
 		<kite.version>0.15.0</kite.version>
-		<avro.version>1.7.5</avro.version>
+		<kite.hive.version>0.12.0-cdh5.0.0</kite.hive.version>
+		<kite.avro.version>1.7.5</kite.avro.version>
 		<hcatalog.version>0.12.0-cdh5.0.0</hcatalog.version>
 		<maveneclipse.version>2.9</maveneclipse.version>
+		<kite.crunch.version>0.9.0-cdh5.0.0</kite.crunch.version>
 		<jaxp.version>1.4</jaxp.version>
+		<kite.findbugs.version>2.0.1</kite.findbugs.version>
 	</properties>
 	<dependencies>
 	<dependency>
-      <groupId>org.kitesdk.examples</groupId>
-      <artifactId>demo-core</artifactId>
+      <groupId>org.kitesdk</groupId>
+      <artifactId>kite-data-core</artifactId>
       <version>${kite.version}</version>
     </dependency>
-		<dependency>
-			<groupId>org.apache.mrunit</groupId>
-			<artifactId>mrunit</artifactId>
-			<version>${mrunit.version}</version>
-			<classifier>hadoop2</classifier>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-client</artifactId>
-			<version>${hadoopclient.version}</version>
-		</dependency>
-		<!-- Manually add httpclient dependency to workaround runtime requirement -->
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>${httpclient.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.kitesdk</groupId>
-			<artifactId>kite-data-core</artifactId>
-			<version>${kite.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.kitesdk</groupId>
-			<artifactId>kite-data-mapreduce</artifactId>
-			<version>${kite.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.kitesdk</groupId>
-			<artifactId>kite-data-hcatalog</artifactId>
-			<version>${kite.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.avro</groupId>
-			<artifactId>avro</artifactId>
-			<version>${avro.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hive.hcatalog</groupId>
-			<artifactId>hive-hcatalog-core</artifactId>
-			<version>${hcatalog.version}</version>
-		</dependency>
-		<!-- Used to get XML classes -->
-		<dependency>
-			<groupId>com.sun.org.apache</groupId>
-			<artifactId>jaxp-ri</artifactId>
-			<version>${jaxp.version}</version>
-		</dependency>
+
+    <dependency>
+      <groupId>org.kitesdk</groupId>
+      <artifactId>kite-data-hcatalog</artifactId>
+      <version>${kite.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kitesdk</groupId>
+      <artifactId>kite-data-hbase</artifactId>
+      <version>${kite.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kitesdk</groupId>
+      <artifactId>kite-data-mapreduce</artifactId>
+      <version>${kite.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kitesdk</groupId>
+      <artifactId>kite-data-crunch</artifactId>
+      <version>${kite.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kitesdk</groupId>
+      <artifactId>kite-hadoop-compatibility</artifactId>
+      <version>${kite.version}</version>
+    </dependency>
+
+    <!-- Recommended dependencies -->
+
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>${kite.avro.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro-mapred</artifactId>
+      <version>${kite.avro.version}</version>
+      <classifier>hadoop2</classifier>
+    </dependency>
+
+    <dependency>
+      <!-- not usually provided -->
+      <groupId>org.apache.crunch</groupId>
+      <artifactId>crunch-core</artifactId>
+      <version>${kite.crunch.version}</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <!-- Avro is provided
+               This is excluded because this pulls in the hadoop1 version
+               because the crunch pom selects the dependency using a profile
+               -->
+          <groupId>org.apache.avro</groupId>
+          <artifactId>avro-mapred</artifactId>
+        </exclusion>
+        <exclusion>
+          <!-- kite doesn't use trevni -->
+          <groupId>org.apache.avro</groupId>
+          <artifactId>trevni-avro</artifactId>
+        </exclusion>
+        <exclusion>
+          <!-- kite doesn't use trevni -->
+          <groupId>org.apache.avro</groupId>
+          <artifactId>trevni-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <!-- avoid warnings by bundling annotations, see CDK-191 -->
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>${kite.findbugs.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <!-- avoid warnings by bundling annotations, see CDK-191 -->
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <version>${kite.findbugs.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <!-- Hadoop-provided dependencies
+         These are required by Kite, but on Hadoop clusters.
+         Kite works with most versions via kite-hadoop-compatibility
+         -->
+
+    <dependency>
+      <groupId>org.kitesdk</groupId>
+      <artifactId>kite-hadoop-cdh5-dependencies</artifactId>
+      <version>${kite.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kitesdk</groupId>
+      <artifactId>kite-hbase-cdh5-dependencies</artifactId>
+      <version>${kite.version}</version>
+      <type>pom</type>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-exec</artifactId>
+      <version>${kite.hive.version}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.hive</groupId>
+      <artifactId>hive-serde</artifactId>
+      <version>${kite.hive.version}</version>
+      <scope>provided</scope>
+      <optional>true</optional>
+    </dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -104,6 +187,49 @@
       <plugin>
         <groupId>org.kitesdk</groupId>
         <artifactId>kite-maven-plugin</artifactId>
+        <version>${kite.version}</version>
+         <dependencies>
+            <dependency>
+              <groupId>org.kitesdk</groupId>
+              <artifactId>kite-hadoop-cdh5-dependencies</artifactId>
+              <version>${kite.version}</version>
+              <type>pom</type>
+            </dependency>
+            <dependency>
+              <groupId>org.kitesdk</groupId>
+              <artifactId>kite-hbase-cdh5-dependencies</artifactId>
+              <version>${kite.version}</version>
+              <type>pom</type>
+            </dependency>
+            <dependency>
+              <groupId>org.apache.hive</groupId>
+              <artifactId>hive-exec</artifactId>
+              <version>${kite.hive.version}</version>
+            </dependency>
+            <!--dependency>
+              <groupId>org.apache.oozie</groupId>
+              <artifactId>oozie-client</artifactId>
+              <version>${kite.oozie.version}</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>org.slf4j</groupId>
+                  <artifactId>slf4j-simple</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency-->
+          </dependencies>
+          <configuration>
+          <hadoopConfiguration>
+            <property>
+              <name>fs.default.name</name>
+              <value>hdfs://localhost.localdomain:8020</value>
+            </property>
+            <property>
+              <name>hive.metastore.uris</name>
+              <value>thrift://localhost:9083</value>
+            </property>
+          </hadoopConfiguration>
+        </configuration>
       </plugin>
 		</plugins>
 	</build>
