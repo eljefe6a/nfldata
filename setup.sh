@@ -24,6 +24,7 @@ hadoop fs -put -f stadiums.csv $BASEDIR/stadium/
 hadoop fs -put -f arrests.csv $BASEDIR/arrests.csv 
 
 echo "Running MR Jobs"
+# mvn kite:run-tool -Dkite.toolClass=PlayByPlayDriver -Dkite.args="$BASEDIR/input,$BASEREPO/playoutput
 hadoop jar target/playbyplay-1.0-SNAPSHOT.jar PlayByPlayDriver -libjars $LIBJARS $BASEDIR/input $BASEREPO/playoutput
 hadoop jar target/playbyplay-1.0-SNAPSHOT.jar -libjars $LIBJARS ArrestJoinDriver $BASEREPO/playoutput $BASEREPO/joinedoutput $BASEDIR/arrests.csv
 
