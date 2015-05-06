@@ -108,3 +108,4 @@ spark/.idea
 spark/target
 spark/.settings
 nflspark.iml
+spark/src/main/java/model

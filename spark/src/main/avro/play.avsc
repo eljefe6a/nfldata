@@ -1,0 +1,48 @@
+{"namespace": "model",
+ "type": "record",
+ "name": "Play",
+ "fields": [
+       {"name" : "Game", "type" : "string", "doc" : "Game Id"},
+       {"name" : "Quarter", "type" : "int", "doc" : "Game Quarter"},
+       {"name" : "GameMinutes", "type" : "int", "doc" : "Game time countdown left in minutes"},
+       {"name" : "GameSeconds", "type" : "int", "doc" : "Game time countdown left in seconds"},
+       {"name" : "Offense", "type" : "string", "doc" : "Team on offense"},
+       {"name" : "Defense", "type" : "string", "doc" : "Team on defense"},
+       {"name" : "Down", "type" : "int", "doc" : "Down number"},
+       {"name" : "YardsToGo", "type" : "int", "doc" : "Number of yards for a first down"},
+       {"name" : "YardLine", "type" : "int", "doc" : "Yard line where the ball is"},
+       {"name" : "PlayDesc", "type" : "string", "doc" : "The original description of the play"},
+       {"name" : "OffenseScore", "type" : "int", "doc" : "The offenses score as of the current play"},
+       {"name" : "DefenseScore", "type" : "int", "doc" : "The defenses score as of the current play"},
+       {"name" : "Year", "type" : "int", "doc" : "The year of the season"},
+       {"name" : "QB", "type" : "string", "doc" : "The QB/Punter/Kicker in a play"},
+       {"name" : "OffensivePlayer", "type" : "string", "doc" : "The receiver or runner"},
+       {"name" : "DefensivePlayer1", "type" : "string", "doc" : "The name of the defensive player on the play"},
+       {"name" : "DefensivePlayer2", "type" : "string", "doc" : "The name of the other defensive player on the play"},
+       {"name" : "Penalty", "type" : "boolean", "doc" : "Whether or not there was a penalty on the play"},
+       {"name" : "Fumble", "type" : "boolean", "doc" : "Whether or not there was a fumble on the play"},
+       {"name" : "Incomplete", "type" : "boolean", "doc" : "Whether or not there was an incomplete pass on the play"},
+       {"name" : "IsGoalGood", "type" : "boolean", "doc" : "For a extra point or field goal kick, whether or not there it was good"},
+       {
+           "name": "PlayType", "doc" : "The type of play that was run",
+           "type" : {
+               "type" : "enum",
+               "name" : "PlayTypes",
+               "symbols" : ["PASS","INTERCEPTION","PUNT","RUN","KICKOFF","SPIKE","FIELDGOAL","EXTRAPOINT","PENALTY","FUMBLE","SACK","KNEEL","REVIEWSCRAMBLE","END"]
+           },
+           "default" : "PASS"
+       },
+       {"name" : "HomeTeam", "type" : "string", "doc" : "The name of the home team"},
+       {"name" : "AwayTeam", "type" : "string", "doc" : "The name of the away team"},
+       {"name" : "DatePlayed", "type" : "string", "doc" : "The data of the game"},
+       {"name" : "PlayId", "type" : "string", "doc" : "The unique id of the play"},
+       {"name" : "Winner", "type" : "string", "doc" : "The name of the team that eventually wins"},
+       {"name" : "HomeTeamScore", "type" : "int", "doc" : "The home teams score at the end of the game"},
+       {"name" : "AwayTeamScore", "type" : "int", "doc" : "The away teams score at the end of the game"},
+       {"name" : "PlayerArrested", "type" : "boolean", "doc" : "Was a player in the play arrested that season"},
+       {"name" : "OffensePlayerArrested", "type" : "boolean", "doc" : "Offense had player arrested in season"},
+       {"name" : "DefensePlayerArrested", "type" : "boolean", "doc" : "Defense had player arrested in season"},
+       {"name" : "HomeTeamPlayerArrested", "type" : "boolean", "doc" : "Home team had player arrested in season"},
+       {"name" : "AwayTeamPlayerArrested", "type" : "boolean", "doc" : "Away team had player arrested in season"}
+ ]
+}
