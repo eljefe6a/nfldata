@@ -102,3 +102,9 @@ src/PassWritable.class
 playbyplay.jar
 src/PlayByPlayDriver.class
 src/PlayByPlayMapper.class
+.DS_Store
+spark/.DS_Store
+spark/.idea
+spark/target
+spark/.settings
+nflspark.iml
