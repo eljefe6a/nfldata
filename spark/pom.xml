@@ -33,6 +33,16 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <artifactId>spark-avro_2.10</artifactId>
       <version>${sparkavro.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro-mapred</artifactId>
+      <version>${avro.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.twitter</groupId>
+      <artifactId>chill-avro</artifactId>
+      <version>0.5.0</version>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
