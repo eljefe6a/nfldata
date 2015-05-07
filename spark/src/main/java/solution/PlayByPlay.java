@@ -5,6 +5,7 @@ import model.PlayTypes;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
+import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -108,16 +109,19 @@ public class PlayByPlay {
     private static Logger logger = Logger.getLogger(PlayByPlay.class);
 
     public static void main(String[] args) {
-        JavaSparkContext sc = new JavaSparkContext("local", "JavaAPISuite");
+        SparkConf conf = new SparkConf();
+        conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer");
 
-        JavaPairRDD<String, String> lines = sc.wholeTextFiles("../input");
+        JavaSparkContext sc = new JavaSparkContext("local", "JavaAPISuite", conf);
+
+        JavaPairRDD<String, String> lines = sc.wholeTextFiles("../input/2013_nfl_pbp_data_through_wk_4.csv");
         JavaRDD<Play> plays =
                 lines.flatMap(
                         (Tuple2<String, String> pair) -> {
                             ArrayList<Play> playsList = new ArrayList<Play>();
 
-                            String idPrefix = pair._1().substring(0, pair._1().indexOf("_"));
-                            ;
+                            String idPrefix = pair._1().substring(pair._1().lastIndexOf("/") + 1, pair._1().lastIndexOf("_"));
+
                             int id = 0;
 
                             String[] contentLines = pair._2().split("\n");
@@ -326,18 +330,7 @@ public class PlayByPlay {
                             return playsList;
                         }
                 );
-        /*
-        public Play(java.lang.CharSequence Game, java.lang.Integer Quarter, java.lang.Integer GameMinutes, java.lang.Integer GameSeconds,
-                java.lang.CharSequence Offense, java.lang.CharSequence Defense, java.lang.Integer Down, java.lang.Integer YardsToGo, java.lang.Integer YardLine,
-                java.lang.CharSequence PlayDesc, java.lang.Integer OffenseScore, java.lang.Integer DefenseScore, java.lang.Integer Year,
-                java.lang.CharSequence QB,
-                java.lang.CharSequence OffensivePlayer, java.lang.CharSequence DefensivePlayer1, java.lang.CharSequence DefensivePlayer2,
-                java.lang.Boolean Penalty, java.lang.Boolean Fumble, java.lang.Boolean Incomplete, java.lang.Boolean IsGoalGood, model.PlayTypes PlayType,
-                java.lang.CharSequence HomeTeam, java.lang.CharSequence AwayTeam, java.lang.CharSequence DatePlayed, java.lang.CharSequence PlayId,
-                java.lang.CharSequence Winner, java.lang.Integer HomeTeamScore, java.lang.Integer AwayTeamScore, java.lang.Boolean PlayerArrested,
-                java.lang.Boolean OffensePlayerArrested, java.lang.Boolean DefensePlayerArrested, java.lang.Boolean HomeTeamPlayerArrested,
-                java.lang.Boolean AwayTeamPlayerArrested) {
-                */
+        
         plays.collect().forEach(
                 t -> System.out.println("Away:" + t.getPlayDesc())
                 //t -> System.out.println("Away:" + t.getAwayTeam() + " Home:" + t.getHomeTeam())
