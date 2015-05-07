@@ -3,6 +3,7 @@ package solution;
 import model.Play;
 import model.PlayTypes;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -293,16 +294,33 @@ public class PlayByPlay {
                                 String playId = idPrefix + "_" + StringUtils.leftPad(String.valueOf(id), 8, "0");
                                 id++;
 
-                                Play play = new Play(pieces[0], Integer.valueOf(pieces[1]), Integer.valueOf(pieces[2]), Integer.valueOf(pieces[3]),
-                                        pieces[4], pieces[5], Integer.valueOf(pieces[6]), Integer.valueOf(pieces[7]), Integer.valueOf(pieces[8]),
-                                        // Not sure where to parse these two from
-                                        "play desc", 0, 0, 2000,
+                                int offenseScore = 0;
+                                int defenseScore = 0;
+                                int year = 0;
+
+                                // Add all of the pieces
+                                for (int i = 0; i < pieces.length; i++) {
+                                    // Normalize output across all seasons because some seasons have more data
+                                    if (piecesIndex == 11) {
+                                        offenseScore = NumberUtils.toInt(pieces[15]);
+                                        defenseScore = NumberUtils.toInt(pieces[16]);
+                                        year = NumberUtils.toInt(pieces[17]);
+                                    } else {
+                                        offenseScore = NumberUtils.toInt(pieces[9]);
+                                        defenseScore = NumberUtils.toInt(pieces[10]);
+                                        year = NumberUtils.toInt(pieces[11]);
+                                    }
+                                }
+
+                                Play play = new Play(pieces[0], NumberUtils.toInt(pieces[1]), NumberUtils.toInt(pieces[2]), NumberUtils.toInt(pieces[3]),
+                                        pieces[4], pieces[5], NumberUtils.toInt(pieces[6]), NumberUtils.toInt(pieces[7]), NumberUtils.toInt(pieces[8]),
+                                        playDesc, offenseScore, defenseScore, year,
                                         qb, offensivePlayer, defensivePlayer1, defensivePlayer2,
                                         Boolean.valueOf(hasPenalty), Boolean.valueOf(hasFumble), Boolean.valueOf(hasIncomplete), Boolean.valueOf(isGoalGood),
                                         PlayTypes.valueOf(playType), gameMatcher.group(3), gameMatcher.group(2), gameMatcher.group(1), playId,
                                         "winner", 0, 0, false, false, false, false, false);
 
-                                playsList.add(new Play());
+                                playsList.add(play);
                             }
 
                             return playsList;
@@ -311,7 +329,8 @@ public class PlayByPlay {
         /*
         public Play(java.lang.CharSequence Game, java.lang.Integer Quarter, java.lang.Integer GameMinutes, java.lang.Integer GameSeconds,
                 java.lang.CharSequence Offense, java.lang.CharSequence Defense, java.lang.Integer Down, java.lang.Integer YardsToGo, java.lang.Integer YardLine,
-                java.lang.CharSequence PlayDesc, java.lang.Integer OffenseScore, java.lang.Integer DefenseScore, java.lang.Integer Year, java.lang.CharSequence QB,
+                java.lang.CharSequence PlayDesc, java.lang.Integer OffenseScore, java.lang.Integer DefenseScore, java.lang.Integer Year,
+                java.lang.CharSequence QB,
                 java.lang.CharSequence OffensivePlayer, java.lang.CharSequence DefensivePlayer1, java.lang.CharSequence DefensivePlayer2,
                 java.lang.Boolean Penalty, java.lang.Boolean Fumble, java.lang.Boolean Incomplete, java.lang.Boolean IsGoalGood, model.PlayTypes PlayType,
                 java.lang.CharSequence HomeTeam, java.lang.CharSequence AwayTeam, java.lang.CharSequence DatePlayed, java.lang.CharSequence PlayId,
@@ -323,5 +342,17 @@ public class PlayByPlay {
                 t -> System.out.println("Away:" + t.getPlayDesc())
                 //t -> System.out.println("Away:" + t.getAwayTeam() + " Home:" + t.getHomeTeam())
         );
+    }
+
+    private static Integer safeParse(String number) {
+        if (number.length() == 0) {
+            return 0;
+        } else {
+            try {
+                return 0;
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
     }
 }
