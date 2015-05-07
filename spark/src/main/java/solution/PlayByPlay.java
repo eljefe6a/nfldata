@@ -14,116 +14,97 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlayByPlay {
-    private static Logger logger = Logger.getLogger(PlayByPlay.class);
-
     private static final char OUTPUT_SEPARATOR = '\t';
-
     /**
      * (14:56) E.Manning pass incomplete deep left to H.Nicks.
      */
     private static final Pattern incompletePass = Pattern
             .compile("([A-Za-z]*\\.?\\s?[A-Za-z]*)\\s*pass.*incomplete.*(to ([A-Za-z]*\\.?\\s?[A-Za-z]*))?");
-
     /**
      * (11:28) (Shotgun) J.Cutler pass short right intended for M.Forte
      * INTERCEPTED by J.Freeman at CHI 4. J.Freeman for 4 yards TOUCHDOWN.
      */
     private static final Pattern interception = Pattern
             .compile("([A-Za-z]*\\.\\s?[A-Za-z]*).*intended for.*INTERCEPTED by ([A-Za-z]*\\.?\\s?[A-Za-z]*)");
-
     /**
      * (14:49) E.Manning pass short middle to V.Cruz to NYG 21 for 5 yards
      * (S.Lee) [J.Hatcher].
      */
     private static final Pattern completePass = Pattern
             .compile("([A-Za-z]*\\.?\\s?[A-Za-z]*)\\s*pass.*to ([A-Z]*\\.\\s?[A-Za-z]*).*\\(?([A-Z]*\\.\\s?[A-Za-z]*)?\\)?\\s?\\[?([A-Z]*\\.\\s?[A-Za-z]*)?\\]?");
-
     /**
      * (13:58) S.Weatherford punts 56 yards to DAL 23 Center-Z.DeOssie. D.Bryant
      * to DAL 24 for 1 yard (Z.DeOssie).
      */
     private static final Pattern punt = Pattern
             .compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*punts.*to.*\\.\\s?([A-Z]*\\.\\s?[A-Za-z]*)?");
-
     /**
      * (13:44) D.Murray left guard to DAL 27 for 3 yards (C.Blackburn).
      */
     private static final Pattern run = Pattern
             .compile("([A-Za-z]*\\.?\\s?[A-Za-z]*)\\s*.*[to|for].*\\(?([A-Z]*\\.\\s?[A-Za-z]*)?\\)?\\s?\\[?([A-Z]*\\.\\s?[A-Za-z]*)?\\]?");
-
     /**
      * D.Bailey kicks 69 yards from DAL 35 to NYG -4. D.Wilson to NYG 16 for 20
      * yards (A.Holmes).
      */
     private static final Pattern kickoff = Pattern
             .compile("([A-Z]*\\.\\s?[A-Za-z]*)\\s*kicks.*from.*\\.?\\s?([A-Z]*\\.\\s?[A-Za-z]*)?");
-
     /**
      * (:17) (No Huddle) M.Stafford spiked the ball to stop the clock.
      */
     private static final Pattern spike = Pattern
             .compile("([A-Za-z]*\\.?\\s?[A-Za-z]*)\\s*spiked the ball");
-
     /**
      * (9:14) L.Tynes 22 yard field goal is GOOD Center-Z.DeOssie
      * Holder-S.Weatherford.
      */
     private static final Pattern fieldGoal = Pattern
             .compile("([A-Za-z]*\\.?\\s?[A-Za-z]*).*field goal");
-
     /**
      * D.Bailey extra point is GOOD Center-L.Ladouceur Holder-C.Jones.
      */
     private static final Pattern extraPoint = Pattern
             .compile("([A-Za-z]*\\.?\\s?[A-Za-z]*).*extra point");
-
     /**
      * (9:36) PENALTY on NYG-V.Cruz False Start 5 yards enforced at DAL 47 - No
      * Play.
      */
     private static final Pattern penalty = Pattern.compile(".*PENALTY.*");
-
     /**
      * (12:19) (Shotgun) R.Tannehill FUMBLES (Aborted) at MIA 49 recovered by
      * MIA-D.Thomas at HST 49. D.Thomas to HST 49 for no gain (B.Cushing).
      */
     private static final Pattern fumble = Pattern.compile(".*FUMBLES.*");
-
     /**
      * (3:42) J.Flacco sacked at BLT 15 for -5 yards (T.Hali).
      */
     private static final Pattern sack = Pattern
             .compile("([A-Za-z]*\\.?\\s?[A-Za-z]*)\\s*.*sacked.*\\(?([A-Z]*\\.\\s?[A-Za-z]*)\\)?\\s?\\[?([A-Z]*\\.\\s?[A-Za-z]*)?\\]?");
-
     /**
      * (1:18) J.Flacco kneels to BLT 40 for -1 yards.
      */
     private static final Pattern kneel = Pattern.compile("([A-Za-z]*\\.?\\s?[A-Za-z]*)\\s*kneels");
-
     /**
      * ** play under review ***
      */
     private static final Pattern review = Pattern.compile("play under review");
-
     /**
      * (5:42) Alex Smith scrambles right end to CLV 20 for 3 yards (J.Haden).
      */
     private static final Pattern scramble = Pattern
             .compile("([A-Za-z]*\\.?\\s?[A-Za-z]*)\\s*scrambles");
-
     /**
      * END QUARTER 3
      */
     private static final Pattern endQuarter = Pattern.compile("END [QUARTER|GAME]");
-
     /**
      * 20120909_STL@DET
      */
     private static final Pattern gameString = Pattern.compile("(\\d*)_([A-Z]*)@([A-Z]*)");
-
     private static final Pattern[] allPatterns = {incompletePass, interception, completePass, punt,
             kickoff, spike, fieldGoal, extraPoint, sack, kneel, review,
             scramble, endQuarter, run};
+    private static Logger logger = Logger.getLogger(PlayByPlay.class);
 
     public static void main(String[] args) {
         JavaSparkContext sc = new JavaSparkContext("local", "JavaAPISuite");
@@ -134,7 +115,8 @@ public class PlayByPlay {
                         (Tuple2<String, String> pair) -> {
                             ArrayList<Play> playsList = new ArrayList<Play>();
 
-                            String idPrefix = pair._1().substring(0, pair._1().indexOf("_"));;
+                            String idPrefix = pair._1().substring(0, pair._1().indexOf("_"));
+                            ;
                             int id = 0;
 
                             String[] contentLines = pair._2().split("\n");
@@ -271,7 +253,6 @@ public class PlayByPlay {
                                 }
 
 
-
                                 if (found == false) {
                                     // TODO: Add again
                                     //context.getCounter("inc", "notfound").increment(1);
@@ -279,8 +260,6 @@ public class PlayByPlay {
 
                                     continue;
                                 }
-
-                                StringBuilder output = new StringBuilder();
 
                                 // Process the game output
                                 Matcher gameMatcher = gameString.matcher(pieces[0]);
@@ -310,56 +289,18 @@ public class PlayByPlay {
                                     continue;
                                 }
 
-                                // Add all of the pieces
-                                for (int i = 0; i < pieces.length; i++) {
-                                    // Normalize output across all seasons by removing extra info
-                                    if (piecesIndex == 11) {
-                                        if (i == 9 || i == 10 || i == 12 || i == 13 || i == 14) {
-                                            continue;
-                                        }
-
-                                        output.append(pieces[i]).append(OUTPUT_SEPARATOR);
-                                    } else {
-                                        output.append(pieces[i]).append(OUTPUT_SEPARATOR);
-                                    }
-                                }
-
-                                // Check that extracted data isn't from missing groups
-                                if (qb == null) {
-                                    qb = "";
-                                }
-
-                                if (offensivePlayer == null) {
-                                    offensivePlayer = "";
-                                }
-
-                                if (defensivePlayer1 == null) {
-                                    defensivePlayer1 = "";
-                                }
-
-                                if (defensivePlayer2 == null) {
-                                    defensivePlayer2 = "";
-                                }
-
-                                // Process the play by play data
-                                output.append(qb).append(OUTPUT_SEPARATOR);
-                                output.append(offensivePlayer).append(OUTPUT_SEPARATOR);
-                                output.append(defensivePlayer1).append(OUTPUT_SEPARATOR);
-                                output.append(defensivePlayer2).append(OUTPUT_SEPARATOR);
-                                output.append(hasPenalty).append(OUTPUT_SEPARATOR);
-                                output.append(hasFumble).append(OUTPUT_SEPARATOR);
-                                output.append(hasIncomplete).append(OUTPUT_SEPARATOR);
-                                output.append(isGoalGood).append(OUTPUT_SEPARATOR);
-                                output.append(playType).append(OUTPUT_SEPARATOR);
-
-                                // Process the game output
-                                output.append(gameMatcher.group(3)).append(OUTPUT_SEPARATOR);
-                                output.append(gameMatcher.group(2)).append(OUTPUT_SEPARATOR);
-                                output.append(gameMatcher.group(1)).append(OUTPUT_SEPARATOR);
-
                                 // Output the unique id of the play
-                                output.append(idPrefix).append("_").append(StringUtils.leftPad(String.valueOf(id), 8, "0"));
+                                String playId = idPrefix + "_" + StringUtils.leftPad(String.valueOf(id), 8, "0");
                                 id++;
+
+                                Play play = new Play(pieces[0], Integer.valueOf(pieces[1]), Integer.valueOf(pieces[2]), Integer.valueOf(pieces[3]),
+                                        pieces[4], pieces[5], Integer.valueOf(pieces[6]), Integer.valueOf(pieces[7]), Integer.valueOf(pieces[8]),
+                                        // Not sure where to parse these two from
+                                        "play desc", 0, 0, 2000,
+                                        qb, offensivePlayer, defensivePlayer1, defensivePlayer2,
+                                        Boolean.valueOf(hasPenalty), Boolean.valueOf(hasFumble), Boolean.valueOf(hasIncomplete), Boolean.valueOf(isGoalGood),
+                                        PlayTypes.valueOf(playType), gameMatcher.group(3), gameMatcher.group(2), gameMatcher.group(1), playId,
+                                        "winner", 0, 0, false, false, false, false, false);
 
                                 playsList.add(new Play());
                             }
