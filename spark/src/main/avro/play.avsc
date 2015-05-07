@@ -28,7 +28,7 @@
            "type" : {
                "type" : "enum",
                "name" : "PlayTypes",
-               "symbols" : ["PASS","INTERCEPTION","PUNT","RUN","KICKOFF","SPIKE","FIELDGOAL","EXTRAPOINT","PENALTY","FUMBLE","SACK","KNEEL","REVIEWSCRAMBLE","END"]
+               "symbols" : ["PASS","INTERCEPTION","PUNT","RUN","KICKOFF","SPIKE","FIELDGOAL","EXTRAPOINT","PENALTY","FUMBLE","SACK","KNEEL","REVIEW","SCRAMBLE","END"]
            },
            "default" : "PASS"
        },
