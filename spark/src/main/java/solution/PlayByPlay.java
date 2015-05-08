@@ -322,7 +322,7 @@ public class PlayByPlay {
                                         qb, offensivePlayer, defensivePlayer1, defensivePlayer2,
                                         Boolean.valueOf(hasPenalty), Boolean.valueOf(hasFumble), Boolean.valueOf(hasIncomplete), Boolean.valueOf(isGoalGood),
                                         PlayTypes.valueOf(playType), gameMatcher.group(3), gameMatcher.group(2), gameMatcher.group(1), playId,
-                                        "winner", 0, 0, false, false, false, false, false);
+                                        "winner", 0, 0);
 
                                 playsList.add(play);
                             }
@@ -330,7 +330,7 @@ public class PlayByPlay {
                             return playsList;
                         }
                 );
-        
+
         plays.collect().forEach(
                 t -> System.out.println("Away:" + t.getPlayDesc())
                 //t -> System.out.println("Away:" + t.getAwayTeam() + " Home:" + t.getHomeTeam())
