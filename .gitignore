@@ -109,3 +109,5 @@ spark/target
 spark/.settings
 nflspark.iml
 spark/src/main/java/model
+spark/.classpath
+spark/.project
