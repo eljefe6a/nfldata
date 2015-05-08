@@ -47,7 +47,7 @@
                   ]
                  }},
         {"name" : "arrest", "doc" : "The arrest data for a play",
-        "type" : {"namespace": "model",
+        "type" : ["null", {"namespace": "model",
                   "type": "record",
                   "name": "Arrest",
                   "fields": [
@@ -57,9 +57,9 @@
                     {"name" : "HomeTeamPlayerArrested", "type" : "boolean", "doc" : "Home team had player arrested in season"},
                     {"name" : "AwayTeamPlayerArrested", "type" : "boolean", "doc" : "Away team had player arrested in season"}
                   ]
-                 }},
+                 }]},
         {"name" : "stadium", "doc" : "The stadium data for a play",
-        "type" : {"namespace": "model",
+        "type" : ["null", {"namespace": "model",
                     "type": "record",
                     "name": "Stadium",
                     "fields": [
@@ -75,9 +75,9 @@
                       { "name" : "RoofType", "type" : "string", "doc" : "(Possible Values:None,Retractable,Dome) - The type of roof in the stadium" },
                       { "name" : "Elevation", "type" : "int", "doc" : "The altitude of the stadium" }
                  ]
-                 }},
+                 }]},
         {"name" : "weather", "doc" : "The weather for a play",
-        "type" : {"namespace": "model",
+        "type" : [ "null", {"namespace": "model",
                   "type": "record",
                   "name": "Weather",
                   "fields": [
@@ -131,6 +131,6 @@
                         { "name" : "WT10", "type" : "int", "doc" : "Tornado, waterspout, or funnel cloud" },
                         { "name" : "WT19", "type" : "int", "doc" : "Unknown source of precipitation" }
                       ]
-                     }}
+                     }]}
   ]
  }
