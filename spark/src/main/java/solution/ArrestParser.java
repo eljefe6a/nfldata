@@ -14,52 +14,32 @@ public class ArrestParser {
     public static PlayData parseArrest(Play play, HashMap<String, ArrayList<String>> teamSeasonToPlayersArrested) {
         Arrest arrest = new Arrest();
 
-        processPlay(play, arrest);
+        processPlay(play, arrest, teamSeasonToPlayersArrested);
 
         return new PlayData(play, arrest, null, null);
     }
 
     private static void processPlay(Play play, Arrest arrest, HashMap<String, ArrayList<String>> teamSeasonToPlayersArrested) {
-        boolean[] arrests = checkArrests(pieces, pieces[4]);
-        offensePlayerArrested = arrests[0];
-        playerArrested = arrests[1];
+        checkArrests(play, arrest, true, teamSeasonToPlayersArrested);
 
-        arrests = checkArrests(pieces, pieces[5]);
-        defensePlayerArrested = arrests[0];
-        playerArrested = playerArrested || arrests[1];
+        checkArrests(play, arrest, false, teamSeasonToPlayersArrested);
 
-        StringBuilder output = new StringBuilder();
-        output.append(playerArrested).append(OUTPUT_SEPARATOR);
-        output.append(defensePlayerArrested).append(OUTPUT_SEPARATOR);
-        output.append(offensePlayerArrested).append(OUTPUT_SEPARATOR);
-
-        boolean homeTeamPlayerArrested = false, awayTeamPlayerArrest = false;
-
-        if (pieces[4].equals(pieces[22])) {
+        if (play.getOffense().equals(play.getHomeTeam())) {
             // Offense is home team
-            homeTeamPlayerArrested = offensePlayerArrested;
-            awayTeamPlayerArrest = defensePlayerArrested;
+            arrest.setHomeTeamPlayerArrested(arrest.getOffensePlayerArrested());
+            arrest.setAwayTeamPlayerArrested(arrest.getDefensePlayerArrested());
         } else {
             // Defense is home team
-            homeTeamPlayerArrested = defensePlayerArrested;
-            awayTeamPlayerArrest = offensePlayerArrested;
+            arrest.setHomeTeamPlayerArrested(arrest.getDefensePlayerArrested());
+            arrest.setAwayTeamPlayerArrested(arrest.getOffensePlayerArrested());
         }
-
-        output.append(homeTeamPlayerArrested).append(OUTPUT_SEPARATOR);
-        output.append(awayTeamPlayerArrest);
-
-        if (pieces[0].equals("20121104_CAR@WAS")) {
-            logger.info(pieces[0] + " " + homeTeamPlayerArrested + " " + awayTeamPlayerArrest + " " + playerArrested + " " + value.toString());
-        }
-
-        context.write(value, new Text(output.toString()));
     }
 
     /**
      * Checks to see if the team has any arrests
      */
-    private boolean[] checkArrests(Play play, boolean checkOffense, HashMap<String, ArrayList<String>> teamSeasonToPlayersArrested) {
-        boolean playerArrested = false, teamPlayerArrested = false;
+    private static void checkArrests(Play play, Arrest arrest, boolean checkOffense, HashMap<String, ArrayList<String>> teamSeasonToPlayersArrested) {
+        boolean playerArrested = false;
 
         String season = play.getYear().toString();
 
@@ -67,27 +47,29 @@ public class ArrestParser {
         ArrayList<String> arrestedPlayers = teamSeasonToPlayersArrested.get(getKey(season, checkOffense ? play.getOffense().toString() : play.getDefense().toString()));
 
         if (arrestedPlayers != null) {
-            teamPlayerArrested = true;
-
             if (checkOffense) {
-                playerArrested = wasPlayerArrested(play.getQB().toString(), arrestedPlayers);
+                arrest.setOffensePlayerArrested(true);
+
+                playerArrested = wasPlayerArrested(play.getQB().toString(), play, arrestedPlayers);
 
                 if (!playerArrested) {
-                    playerArrested = wasPlayerArrested(play.getOffensivePlayer().toString(), arrestedPlayers);
+                    playerArrested = wasPlayerArrested(play.getOffensivePlayer().toString(), play, arrestedPlayers);
                 }
+
+                arrest.setPlayerArrested(arrest.getPlayerArrested() || playerArrested);
             } else {
-                playerArrested = wasPlayerArrested(play.getDefensivePlayer1().toString(), arrestedPlayers);
+                playerArrested = wasPlayerArrested(play.getDefensivePlayer1().toString(), play, arrestedPlayers);
 
                 if (!playerArrested && play.getDefensivePlayer2() != null) {
-                    playerArrested = wasPlayerArrested(play.getDefensivePlayer2().toString(), arrestedPlayers);
+                    playerArrested = wasPlayerArrested(play.getDefensivePlayer2().toString(), play, arrestedPlayers);
                 }
+
+                arrest.setPlayerArrested(arrest.getPlayerArrested() || playerArrested);
             }
         }
-
-        return new boolean[] { teamPlayerArrested, playerArrested };
     }
 
-    private boolean wasPlayerArrested(String player, ArrayList<String> arrestedPlayers) {
+    private static boolean wasPlayerArrested(String player, Play play, ArrayList<String> arrestedPlayers) {
         for (String arrestedPlayer : arrestedPlayers) {
             // See if the regular name is there
             if (player.equals(arrestedPlayer)) {
@@ -103,10 +85,8 @@ public class ArrestParser {
             }
 
             // Try one more time in the play description in case it wasn't parsed
-            if (pieces[9].indexOf(firstInitial) != -1 || pieces[9].indexOf(arrestedPlayer) != -1) {
-                playerArrested = true;
-
-                break;
+            if (play.getPlayDesc().toString().indexOf(firstInitial) != -1 || play.getPlayDesc().toString().indexOf(arrestedPlayer) != -1) {
+                return true;
             }
         }
 
