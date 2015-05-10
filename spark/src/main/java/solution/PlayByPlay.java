@@ -53,7 +53,7 @@ public class PlayByPlay {
 
         HashMap<String, ArrayList<String>> teamSeasonToPlayersArrested = new HashMap<String, ArrayList<String>>();
 
-        for (String line : input.collect()) {
+        input.collect().forEach((String line) -> {
             String[] pieces = line.split(",");
 
             String key = ArrestParser.getKey(pieces[0], pieces[1]);
@@ -66,7 +66,7 @@ public class PlayByPlay {
             }
 
             arrestsPerSeasonAndTeam.add(pieces[2]);
-        }
+        });
 
         return teamSeasonToPlayersArrested;
     }
