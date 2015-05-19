@@ -1,8 +1,6 @@
 package solution;
 
-import model.Play;
-import model.PlayData;
-import model.PlayTypes;
+import model.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.hadoop.util.hash.Hash;
@@ -14,6 +12,8 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
+import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.SQLContext;
 import scala.Tuple2;
 
 import java.util.ArrayList;
@@ -40,7 +40,35 @@ public class PlayByPlay {
                             PlayByPlayParser playByPlayParser = new PlayByPlayParser();
                             return playByPlayParser.parsePlayFile(pair._2(), pair._1());
                         }
-                ).map((Play p) -> ArrestParser.parseArrest(p, teamSeasonToPlayersArrested.getValue()));
+                ).map(
+                        (Play p) -> ArrestParser.parseArrest(p, teamSeasonToPlayersArrested.getValue())
+                );
+
+        SQLContext sqlContext = new SQLContext(sc);
+
+        // Create the stadium table
+        JavaRDD<Stadium> stadiums = sc.textFile("../stadiums.csv").map(
+                (String line) -> {
+                    return StadiumParser.parseStadium(line);
+                }
+        );
+
+        DataFrame stadiumTable = sqlContext.applySchema(stadiums, Stadium.class);
+        stadiumTable.registerTempTable("stadiums");
+
+        // Create the weather table
+        JavaRDD<Weather> weather = sc.textFile("../173328.csv").map(
+                (String line) -> {
+                    return WeatherParser.parseWeather(line);
+                }
+        );
+
+        DataFrame weatherTable = sqlContext.applySchema(weather, Weather.class);
+        weatherTable.registerTempTable("weather");
+
+        // TODO: Join and create united play data
+
+        // TODO: Save out as Avro file
 
         plays.collect().forEach(
                 t -> System.out.println("Away:" + t.getPlay().getPlayDesc())
