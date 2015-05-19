@@ -63,6 +63,20 @@ public class WeatherParser {
         weather.setWT10(NumberUtils.toInt(fields[46], 0));
         weather.setWT19(NumberUtils.toInt(fields[47], 0));
 
+        // TODO: Add hasWeather and weatherType
+        /*
+        (WV07 > 0 OR WV01 > 0 OR WV20 > 0 OR WV03 > 0) as hasWeatherInVicinity,
+        (WT09 > 0 OR WT14 > 0 OR WT07 > 0 OR WT01 > 0 OR WT15 > 0 OR WT17 > 0 OR
+        WT06 > 0 OR WT21 > 0 OR WT05 > 0 OR  WT02 > 0 OR WT11 > 0 OR WT22 > 0 OR
+        WT04 > 0 OR WT13 > 0 OR WT16 > 0 OR  WT08 > 0 OR WT18 > 0 OR WT03 > 0 OR
+        WT10 > 0 OR WT19 > 0) as hasWeatherType,
+        (WV07 > 0 OR WV01 > 0 OR WV20 > 0 OR WV03 > 0 OR
+        WT09 > 0 OR WT14 > 0 OR WT07 > 0 OR WT01 > 0 OR WT15 > 0 OR WT17 > 0 OR
+        WT06 > 0 OR WT21 > 0 OR WT05 > 0 OR  WT02 > 0 OR WT11 > 0 OR WT22 > 0 OR
+        WT04 > 0 OR WT13 > 0 OR WT16 > 0 OR  WT08 > 0 OR WT18 > 0 OR WT03 > 0 OR
+        WT10 > 0 OR WT19 > 0) as hasWeather
+        */
+
         return weather;
     }
 }
