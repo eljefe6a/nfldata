@@ -76,6 +76,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <configuration>
               <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
               <outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+              <stringType>String</stringType>
             </configuration>
           </execution>
         </executions>
