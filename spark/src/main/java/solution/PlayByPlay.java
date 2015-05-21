@@ -58,35 +58,32 @@ public class PlayByPlay {
         SQLContext sqlContext = new SQLContext(sc);
 
         // Create the playbyplay table
-        //DataFrame playbyplaytable = createPlayByPlay(plays, sqlContext);
+        createPlayByPlay(plays, sqlContext);
 
         // Create the stadium table
-        //DataFrame stadiums = createStadiums(sc, sqlContext);
+        createStadiums(sc, sqlContext);
 
         // Create the weather table
-        DataFrame weather = createWeather(sc, sqlContext);
+        createWeather(sc, sqlContext);
 
-        DataFrame join = sqlContext.sql("select * from weather");
         // TODO: Join and create united play data
 
         // TODO: Save out as Avro file
 
-        /*
         DataFrame join = sqlContext.sql("select *, " +
-                "(WV07 > 0 OR WV01 > 0 OR WV20 > 0 OR WV03 > 0) as hasWeatherInVicinity, " +
-                "(WT09 > 0 OR WT14 > 0 OR WT07 > 0 OR WT01 > 0 OR WT15 > 0 OR WT17 > 0 OR " +
-                "WT06 > 0 OR WT21 > 0 OR WT05 > 0 OR  WT02 > 0 OR WT11 > 0 OR WT22 > 0 OR " +
-                "WT04 > 0 OR WT13 > 0 OR WT16 > 0 OR  WT08 > 0 OR WT18 > 0 OR WT03 > 0 OR " +
-                "WT10 > 0 OR WT19 > 0) as hasWeatherType, " +
-                "(WV07 > 0 OR WV01 > 0 OR WV20 > 0 OR WV03 > 0 OR " +
-                "WT09 > 0 OR WT14 > 0 OR WT07 > 0 OR WT01 > 0 OR WT15 > 0 OR WT17 > 0 OR " +
-                "WT06 > 0 OR WT21 > 0 OR WT05 > 0 OR  WT02 > 0 OR WT11 > 0 OR WT22 > 0 OR " +
-                "WT04 > 0 OR WT13 > 0 OR WT16 > 0 OR  WT08 > 0 OR WT18 > 0 OR WT03 > 0 OR " +
-                "WT10 > 0 OR WT19 > 0) as hasWeather " +
+                "(wv07 > 0 OR wv01 > 0 OR wv20 > 0 OR wv03 > 0) as hasWeatherInVicinity, " +
+                "(wt09 > 0 OR wt14 > 0 OR wt07 > 0 OR wt01 > 0 OR wt15 > 0 OR wt17 > 0 OR " +
+                "wt06 > 0 OR wt21 > 0 OR wt05 > 0 OR  wt02 > 0 OR wt11 > 0 OR wt22 > 0 OR " +
+                "wt04 > 0 OR wt13 > 0 OR wt16 > 0 OR  wt08 > 0 OR wt18 > 0 OR wt03 > 0 OR " +
+                "wt10 > 0 OR wt19 > 0) as hasWeatherType, " +
+                "(wv07 > 0 OR wv01 > 0 OR wv20 > 0 OR wv03 > 0 OR " +
+                "wt09 > 0 OR wt14 > 0 OR wt07 > 0 OR wt01 > 0 OR wt15 > 0 OR wt17 > 0 OR " +
+                "wt06 > 0 OR wt21 > 0 OR wt05 > 0 OR  wt02 > 0 OR wt11 > 0 OR wt22 > 0 OR " +
+                "wt04 > 0 OR wt13 > 0 OR wt16 > 0 OR  wt08 > 0 OR wt18 > 0 OR wt03 > 0 OR " +
+                "wt10 > 0 OR wt19 > 0) as hasWeather " +
                 " from playbyplay " +
                 "join stadium on stadium.team = playbyplay.hometeam " +
                 "left outer join weather on stadium.weatherstation = weather.station and playbyplay.dateplayed = weather.readingdate");
-        */
 
         join.javaRDD().collect().forEach(
                 (Row row) -> {
@@ -97,24 +94,14 @@ public class PlayByPlay {
 
     }
 
-    private static DataFrame createWeather(JavaSparkContext sc, SQLContext sqlContext) {
+    private static void createWeather(JavaSparkContext sc, SQLContext sqlContext) {
         JavaRDD<Weather> weather = sc.textFile("../173328.csv").map(
                 (String line) -> {
                     return WeatherParser.parseWeather(line);
                 }
         );
 
-
-        // Workaround because Spark SQL doesn't support Avro directly
-        List<StructField> fields = new ArrayList<StructField>();
-
-        for (Schema.Field field : Weather.SCHEMA$.getFields()) {
-            field.schema().getType();
-
-            fields.add(DataTypes.createStructField(field.name(), getDataTypeForAvro(field.schema()), true));
-        }
-
-        StructType schema = DataTypes.createStructType(fields);
+        StructType schema = getStructType(new Schema[] { Weather.SCHEMA$ } );
 
         JavaRDD<Row> rowRDD = weather.map(
                 (Weather weatherRow) -> {
@@ -133,30 +120,53 @@ public class PlayByPlay {
         // Apply the schema to the RDD.
         DataFrame weatherFrame = sqlContext.createDataFrame(rowRDD, schema);
         weatherFrame.registerTempTable("weather");
-
-        return weatherFrame;
     }
 
-    private static DataFrame createStadiums(JavaSparkContext sc, SQLContext sqlContext) {
+    private static void createStadiums(JavaSparkContext sc, SQLContext sqlContext) {
         JavaRDD<Stadium> stadiums = sc.textFile("../stadiums.csv").map(
                 (String line) -> {
                     return StadiumParser.parseStadium(line);
                 }
         );
 
-        DataFrame stadiumsTable = sqlContext.createDataFrame(stadiums, Stadium.class);
-        stadiumsTable.registerTempTable("stadium");
+        StructType schema = getStructType(new Schema[] { Stadium.SCHEMA$ } );
 
-        System.out.println("Printing schema");
-        stadiumsTable.printSchema();
+        JavaRDD<Row> rowRDD = stadiums.map(
+                (Stadium stadiumRow) -> {
+                    return RowFactory.create(stadiumRow.get(0), stadiumRow.get(1), stadiumRow.get(2), stadiumRow.get(3),
+                            stadiumRow.get(4), stadiumRow.get(5), stadiumRow.get(6), stadiumRow.get(7), stadiumRow.get(8),
+                            stadiumRow.get(9), stadiumRow.get(10));
+                });
 
-        return null;
+        // Apply the schema to the RDD.
+        DataFrame stadiumFrame = sqlContext.createDataFrame(rowRDD, schema);
+        stadiumFrame.registerTempTable("stadium");
     }
 
-    private static DataFrame createPlayByPlay(JavaRDD<PlayData> plays, SQLContext sqlContext) {
-        DataFrame playbyplaytable = sqlContext.applySchema(plays, SchemaConverters.class);
-        playbyplaytable.registerTempTable("playbyplay");
-        return playbyplaytable;
+    private static void createPlayByPlay(JavaRDD<PlayData> plays, SQLContext sqlContext) {
+        StructType schema = getStructType(new Schema[] { Play.SCHEMA$, Arrest.SCHEMA$ } );
+
+        // Only plays and arrest exist so far
+        JavaRDD<Row> rowRDD = plays.map(
+                (PlayData playData) -> {
+                    return RowFactory.create(playData.getPlay().get(0), playData.getPlay().get(1), playData.getPlay().get(2),
+                            playData.getPlay().get(3), playData.getPlay().get(4), playData.getPlay().get(5),
+                            playData.getPlay().get(6), playData.getPlay().get(7), playData.getPlay().get(8),
+                            playData.getPlay().get(9), playData.getPlay().get(10), playData.getPlay().get(11),
+                            playData.getPlay().get(12), playData.getPlay().get(13), playData.getPlay().get(14),
+                            playData.getPlay().get(15), playData.getPlay().get(16), playData.getPlay().get(17),
+                            playData.getPlay().get(18), playData.getPlay().get(19), playData.getPlay().get(20),
+                            playData.getPlay().get(21), playData.getPlay().get(22), playData.getPlay().get(23),
+                            playData.getPlay().get(24), playData.getPlay().get(25), playData.getPlay().get(26),
+                            playData.getPlay().get(27), playData.getPlay().get(28),
+                            playData.getArrest().get(0), playData.getArrest().get(1), playData.getArrest().get(2),
+                            playData.getArrest().get(3), playData.getArrest().get(4)
+                            );
+                });
+
+        // Apply the schema to the RDD.
+        DataFrame playsAndArrestsFrame = sqlContext.createDataFrame(rowRDD, schema);
+        playsAndArrestsFrame.registerTempTable("playbyplay");
     }
 
     private static HashMap<String, ArrayList<String>> loadArrests(String arrestsFile, JavaSparkContext sc) {
@@ -180,6 +190,24 @@ public class PlayByPlay {
         });
 
         return teamSeasonToPlayersArrested;
+    }
+
+    private static StructType getStructType(Schema[] schemas) {
+        // Workaround because Spark SQL doesn't support Avro directly
+        List<StructField> fields = new ArrayList<StructField>();
+
+        for (Schema schema : schemas) {
+            for (Schema.Field field : schema.getFields()) {
+                field.schema().getType();
+
+                // Spark SQL seems to be case sensitive
+                // Normalizing to all lower case
+                fields.add(DataTypes.createStructField(field.name().toLowerCase(),
+                        getDataTypeForAvro(field.schema()), true));
+            }
+        }
+
+        return DataTypes.createStructType(fields);
     }
 
     private static DataType getDataTypeForAvro(Schema schema) {
