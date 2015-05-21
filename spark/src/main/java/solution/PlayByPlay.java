@@ -66,10 +66,7 @@ public class PlayByPlay {
         // Create the weather table
         createWeather(sc, sqlContext);
 
-        // TODO: Join and create united play data
-
-        // TODO: Save out as Avro file
-
+        // Join all four datasets
         DataFrame join = sqlContext.sql("select *, " +
                 "(wv07 > 0 OR wv01 > 0 OR wv20 > 0 OR wv03 > 0) as hasWeatherInVicinity, " +
                 "(wt09 > 0 OR wt14 > 0 OR wt07 > 0 OR wt01 > 0 OR wt15 > 0 OR wt17 > 0 OR " +
@@ -85,12 +82,17 @@ public class PlayByPlay {
                 "join stadium on stadium.team = playbyplay.hometeam " +
                 "left outer join weather on stadium.weatherstation = weather.station and playbyplay.dateplayed = weather.readingdate");
 
+
+        // Recreate Avro object
         join.javaRDD().collect().forEach(
                 (Row row) -> {
                     //System.out.println("Away:" + row.toString());
                 }
 
         );
+
+
+        // TODO: Save out as Avro file
 
     }
 
