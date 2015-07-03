@@ -311,7 +311,7 @@ public class PlayByPlayParser {
                     playDesc, offenseScore, defenseScore, year,
                     qb, offensivePlayer, defensivePlayer1, defensivePlayer2,
                     Boolean.valueOf(hasPenalty), Boolean.valueOf(hasFumble), Boolean.valueOf(hasIncomplete), Boolean.valueOf(isGoalGood),
-                    PlayTypes.valueOf(playType), gameMatcher.group(3), gameMatcher.group(2), gameMatcher.group(1), playId,
+                    playType, gameMatcher.group(3), gameMatcher.group(2), gameMatcher.group(1), playId,
                     "winner", 0, 0);
 
             playsList.add(play);

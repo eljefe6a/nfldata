@@ -28,15 +28,7 @@
                         {"name" : "Fumble", "type" : "boolean", "doc" : "Whether or not there was a fumble on the play"},
                         {"name" : "Incomplete", "type" : "boolean", "doc" : "Whether or not there was an incomplete pass on the play"},
                         {"name" : "IsGoalGood", "type" : "boolean", "doc" : "For a extra point or field goal kick, whether or not there it was good"},
-                        {
-                            "name": "PlayType", "doc" : "The type of play that was run",
-                            "type" : {
-                                "type" : "enum",
-                                "name" : "PlayTypes",
-                                "symbols" : ["PASS","INTERCEPTION","PUNT","RUN","KICKOFF","SPIKE","FIELDGOAL","EXTRAPOINT","PENALTY","FUMBLE","SACK","KNEEL","REVIEW","SCRAMBLE","END"]
-                            },
-                            "default" : "PASS"
-                        },
+                        {"name" : "PlayType", "type" : "string", "doc" : "The type of play that was run. Should be one of: PASS,INTERCEPTION,PUNT,RUN,KICKOFF,SPIKE,FIELDGOAL,EXTRAPOINT,PENALTY,FUMBLE,SACK,KNEEL,REVIEW,SCRAMBLE,END"},
                         {"name" : "HomeTeam", "type" : "string", "doc" : "The name of the home team"},
                         {"name" : "AwayTeam", "type" : "string", "doc" : "The name of the away team"},
                         {"name" : "DatePlayed", "type" : "string", "doc" : "The data of the game"},

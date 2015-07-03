@@ -22,7 +22,7 @@ public class TestAvro {
         JavaRDD<Play> plays =
                 lines.map(
                         line -> new Play("game", 1, 1, 1, "offense", "defense", 1, 10, 20, "play desc", 0, 0, 2000, "qb", "offensiveplayer", "defense1", "defense2",
-                                false, false, false, false, PlayTypes.PASS, "home", "away", "dateplayed", "playid", "winner", 0, 0)
+                                false, false, false, false, "PASS", "home", "away", "dateplayed", "playid", "winner", 0, 0)
                 );
         /*
         public Play(java.lang.CharSequence Game, java.lang.Integer Quarter, java.lang.Integer GameMinutes, java.lang.Integer GameSeconds,
