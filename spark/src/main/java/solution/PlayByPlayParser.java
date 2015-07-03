@@ -1,15 +1,14 @@
 package solution;
 
-import model.Play;
-import model.PlayTypes;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import model.Play;
 
 /**
  * Created by vmuser on 5/8/15.

@@ -1,20 +1,12 @@
 package solution;
 
-import com.databricks.spark.avro.AvroRelation;
-import com.databricks.spark.avro.AvroSaver;
-import com.databricks.spark.avro.DefaultSource;
-import com.databricks.spark.avro.SchemaConverters;
-import model.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import org.apache.avro.Schema;
-import org.apache.avro.specific.SpecificData;
-import org.apache.avro.specific.SpecificRecordBase;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.hadoop.util.hash.Hash;
-import org.apache.hadoop.yarn.webapp.hamlet.HamletSpec;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -23,34 +15,23 @@ import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SQLContext;
-import org.apache.spark.sql.types.BinaryType;
-import org.apache.spark.sql.types.BooleanType;
-import org.apache.spark.sql.types.ByteType;
 import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.DataTypes;
-import org.apache.spark.sql.types.DateType;
-import org.apache.spark.sql.types.DecimalType;
-import org.apache.spark.sql.types.DoubleType;
-import org.apache.spark.sql.types.FloatType;
-import org.apache.spark.sql.types.IntegerType;
-import org.apache.spark.sql.types.LongType;
-import org.apache.spark.sql.types.ShortType;
-import org.apache.spark.sql.types.StringType;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
-import org.apache.spark.sql.types.TimestampType;
 
+import com.databricks.spark.avro.AvroSaver;
+
+import model.Arrest;
+import model.Play;
+import model.PlayData;
+import model.Stadium;
+import model.Weather;
 import scala.Tuple2;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PlayByPlay {
 
-	private static Logger logger = Logger.getLogger(PlayByPlay.class);
+	public static Logger logger = Logger.getLogger(PlayByPlay.class);
 
 	public static void main(String[] args) {
 		SparkConf conf = new SparkConf();
@@ -92,88 +73,8 @@ public class PlayByPlay {
 				+ "join stadium on stadium.team = playbyplay.hometeam "
 				+ "left outer join weather on stadium.weatherstation = weather.station and playbyplay.dateplayed = weather.readingdate");
 
-		// Recreate Avro object
-		//JavaRDD<PlayData> joinedPlays = join.javaRDD().map((Row row) -> {
-		//	return recreateAvro(row);
-		//});
-		
+		// Save out as Avro
 		AvroSaver.save(join, "output");
-		// TODO: Save out as Avro file
-
-	}
-
-	private static PlayData recreateAvro(Row row) {
-		StructType joinSchema = row.schema();
-		StructField[] fields = joinSchema.fields();
-
-		PlayData playData = new PlayData();
-
-		Play play = new Play();
-		Arrest arrest = new Arrest();
-		Stadium stadium = new Stadium();
-		Weather weather = new Weather();
-
-		playData.setPlay(play);
-		playData.setArrest(arrest);
-		playData.setStadium(stadium);
-		playData.setWeather(weather);
-
-		SpecificRecordBase currentData = play;
-
-		// TODO: add hasweathers
-
-		int columnNumber = 0;
-
-		for (StructField field : fields) {
-			if (field.dataType().getClass() == ByteType.class) {
-				currentData.put(columnNumber, row.getByte(columnNumber));
-				break;
-			} else if (field.dataType().getClass() == ShortType.class) {
-				currentData.put(columnNumber, row.getShort(columnNumber));
-				break;
-			} else if (field.dataType().getClass() == IntegerType.class) {
-				currentData.put(columnNumber, row.getInt(columnNumber));
-				break;
-			} else if (field.dataType().getClass() == LongType.class) {
-				currentData.put(columnNumber, row.getLong(columnNumber));
-				break;
-			} else if (field.dataType().getClass() == FloatType.class) {
-				currentData.put(columnNumber, row.getFloat(columnNumber));
-				break;
-			} else if (field.dataType().getClass() == DoubleType.class) {
-				currentData.put(columnNumber, row.getDouble(columnNumber));
-				break;
-			} else if (field.dataType().getClass() == DecimalType.class) {
-				currentData.put(columnNumber, row.getDecimal(columnNumber));
-				break;
-			} else if (field.dataType().getClass() == StringType.class) {
-				currentData.put(columnNumber, row.getString(columnNumber));
-				break;
-			} else if (field.dataType().getClass() == BooleanType.class) {
-				currentData.put(columnNumber, row.getBoolean(columnNumber));
-				break;
-			} else if (field.dataType().getClass() == BinaryType.class) {
-				throw new RuntimeException(field.dataType().getClass() + " not supported");
-			} else if (field.dataType().getClass() == TimestampType.class) {
-				throw new RuntimeException(field.dataType().getClass() + " not supported");
-			} else if (field.dataType().getClass() == DateType.class) {
-				throw new RuntimeException(field.dataType().getClass() + " not supported");
-			}
-
-			columnNumber++;
-
-			if (columnNumber < 29) {
-				currentData = play;
-			} else if (columnNumber < 33) {
-				currentData = arrest;
-			} else if (columnNumber < 44) {
-				currentData = stadium;
-			} else if (columnNumber < 93) {
-				currentData = weather;
-			}
-		}
-
-		return playData;
 	}
 
 	private static void createWeather(JavaSparkContext sc, SQLContext sqlContext) {
